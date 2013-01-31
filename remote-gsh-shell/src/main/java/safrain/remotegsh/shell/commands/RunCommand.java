@@ -9,30 +9,31 @@ public class RunCommand implements GshCommand {
 
 	@Override
 	public boolean accept(String cmd) {
-		// TODO Auto-generated method stub
-		return false;
+		return "run".equals(cmd);
 	}
 
 	@Override
 	public void execute(String[] args) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public String getCommandTitle() {
-		// TODO Auto-generated method stub
-		return null;
+		return "run";
 	}
 
 	@Override
 	public String getBriefInfo() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Run script";
 	}
 
 	@Override
 	public String getDetailInfo() {
+		return "Run script";
+	}
+
+	@Override
+	public String getUsage() {
 		// TODO Auto-generated method stub
 		return null;
 	}

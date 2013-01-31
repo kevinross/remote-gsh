@@ -1,5 +1,7 @@
 package safrain.remotegsh.shell.commands;
 
+import safrain.remotegsh.shell.AnsiUtil;
+
 /**
  * Quit shell
  * 
@@ -15,24 +17,27 @@ public class QuitCommand implements GshCommand {
 	@Override
 	public void execute(String[] args) {
 		System.out.println("Bye~");
+		System.exit(0);
 	}
 
 	@Override
 	public String getCommandTitle() {
-		// TODO Auto-generated method stub
-		return null;
+		return "exit";
 	}
 
 	@Override
 	public String getBriefInfo() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Exit the shell";
 	}
 
 	@Override
 	public String getDetailInfo() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Exit the shell.";
+	}
+
+	@Override
+	public String getUsage() {
+		return "usage: " + AnsiUtil.bold("exit");
 	}
 
 }

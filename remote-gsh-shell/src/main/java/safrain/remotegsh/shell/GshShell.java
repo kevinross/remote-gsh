@@ -2,6 +2,7 @@ package safrain.remotegsh.shell;
 
 import static org.fusesource.jansi.Ansi.ansi;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ import org.fusesource.jansi.AnsiConsole;
 
 import safrain.remotegsh.shell.commands.GshCommand;
 import safrain.remotegsh.shell.commands.HelpCommand;
+import safrain.remotegsh.shell.commands.ServerCommand;
 import safrain.remotegsh.shell.commands.QuitCommand;
 
 /**
@@ -29,8 +31,12 @@ public class GshShell {
 	/**
 	 * 
 	 */
-	private String host;
 
+	private GshConfig config = new GshConfig();
+
+	private static final File defaultConfigFile = new File("gsh.properties");
+
+	private File configFile = defaultConfigFile;
 	private List<GshCommand> commands = new ArrayList<GshCommand>();
 
 	private ConsoleReader consoleReader;
@@ -55,49 +61,65 @@ public class GshShell {
 		consoleReader.addCompleter(new ArgumentCompleter(completors));
 		commands.add(new QuitCommand());
 		commands.add(new HelpCommand(commands));
+		commands.add(new ServerCommand(this));
 	}
 
 	public void start() throws IOException {
+		System.out.println("@|bold >|@");
+		System.out.println("Remote Groovy Shell");
+		System.out.println("Type '" + AnsiUtil.bold("help") + "' for help.");
+		config.load(configFile);
 		String input = null;
 		while (true) {
-			input = consoleReader.readLine(ansi().bold().a("remote-gsh>").reset().toString());
+			input = consoleReader.readLine(ansi().bold().a("rgsh@").a(config.getServer()).a(">").reset().toString()).trim();
 			for (GshCommand command : commands) {
-				List<String> inputList = parseInput(input);
-				String cmd = inputList.get(0);
-				String[] args;
-				if (inputList.size() > 1) {
-					args = (String[]) inputList.subList(1, inputList.size()).toArray(new String[0]);
-				} else {
-					args = new String[0];
-				}
-				if (command.accept(cmd)) {
-					command.execute(args);
-
-					if (command.getClass() == QuitCommand.class) {// exit
-						return;
+				String cmd = parseCommand(input);
+				if (cmd != null && !cmd.isEmpty()) {
+					if (command.accept(cmd)) {
+						String[] args = parseArgs(input);
+						command.execute(args);
+						break;
 					}
-					break;
 				}
 			}
 		}
 	}
 
-	private List<String> parseInput(String input) {
-		List<String> args = new ArrayList<String>();
+	private String parseCommand(String input) {
+		StringTokenizer t = new StringTokenizer(input.trim(), " ");
+		if (!t.hasMoreElements())
+			return null;
+		return t.nextToken();
+	}
+
+	private String[] parseArgs(String input) {
+		List<String> tokens = new ArrayList<String>();
 		StringTokenizer t = new StringTokenizer(input.trim(), " ");
 		while (t.hasMoreElements()) {
 			String w = t.nextToken();
-			args.add(w);
+			tokens.add(w);
 		}
-		return args;
+		if (tokens.size() > 1) {
+			return (String[]) tokens.subList(1, tokens.size()).toArray(new String[0]);
+		} else {
+			return new String[0];
+		}
 	}
 
-	public String getHost() {
-		return host;
+	public File getConfigFile() {
+		return configFile;
 	}
 
-	public void setHost(String host) {
-		this.host = host;
+	public void setConfigFile(File configFile) {
+		this.configFile = configFile;
+	}
+
+	public GshConfig getConfig() {
+		return config;
+	}
+
+	public void setConfig(GshConfig config) {
+		this.config = config;
 	}
 
 }

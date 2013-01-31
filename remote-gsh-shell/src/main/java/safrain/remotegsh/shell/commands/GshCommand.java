@@ -12,4 +12,6 @@ public interface GshCommand {
 
 	String getDetailInfo();
 
+	String getUsage();
+
 }
