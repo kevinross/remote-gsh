@@ -1,0 +1,4 @@
+
+@|green Remote Groovy Shell|@
+
+Type '@|bold help|@' for help.

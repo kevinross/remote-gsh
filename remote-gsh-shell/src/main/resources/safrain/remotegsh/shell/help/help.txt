@@ -1,0 +1,5 @@
+
+usage: @|bold help|@ [<command>]
+       @|bold ?|@ [<command>]
+
+Display the list of commands or the help text for command.

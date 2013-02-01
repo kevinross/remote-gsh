@@ -1,0 +1,4 @@
+
+usage: @|bold server|@ [<url>]
+
+Display or set current server url.
