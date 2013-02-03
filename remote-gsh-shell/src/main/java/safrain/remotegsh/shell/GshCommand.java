@@ -2,11 +2,17 @@ package safrain.remotegsh.shell;
 
 import java.util.regex.Pattern;
 
+/**
+ * Available built in shell command,and patterns
+ * 
+ * @author safrain
+ * 
+ */
 public enum GshCommand {
 	HELP("help|\\?"), //
 	EXIT("quit|exit"), //
 	RUN("run"), //
-	SERVER("server");
+	SERVER("server"), CHARSET("charset|encoding");
 
 	private Pattern pattern;
 

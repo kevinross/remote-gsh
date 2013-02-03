@@ -14,6 +14,7 @@ public class Main {
 		if (args.length > 0) {
 			shell.setConfigFile(new File(args[0]));
 		}
+		shell.init();
 		shell.start();
 	}
 }

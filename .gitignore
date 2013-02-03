@@ -1,4 +1,7 @@
 *.class
+# Targets #
+remote-gsh-server/target
+remote-gsh-shell/target
 
 # Package Files #
 *.jar

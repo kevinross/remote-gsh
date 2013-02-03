@@ -1,0 +1,5 @@
+TODO:
+1.locate java
+2.get jar file
+3.generate bootstrap script
+4.show install complete message 
