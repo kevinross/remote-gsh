@@ -80,12 +80,7 @@ public class GshShell {
 			if (input.isEmpty()) {
 				continue;
 			}
-			if (sid == null) {
-				connect();
-			}
-			if (sid == null) {// in case of connection error
-				continue;
-			}
+
 			String cmd = parseCommand(input);
 			if (cmd == null || cmd.isEmpty()) {
 				continue;
@@ -100,6 +95,7 @@ public class GshShell {
 					cmdExit();
 					break;
 				case RUN:
+					ensureConnection();
 					cmdRun(parseArgs(input));
 					break;
 				case SERVER:
@@ -110,12 +106,20 @@ public class GshShell {
 					break;
 				}
 			} else {
+				ensureConnection();
 				shellExecute(input);
 			}
 		}
 	}
 
 	// ==========Connection==========
+	private boolean ensureConnection() {
+		if (sid == null) {
+			connect();
+		}
+		return sid != null;// in case of connection error
+	}
+
 	private void connect() {
 		ServerResponse response = null;
 		try {
@@ -193,6 +197,7 @@ public class GshShell {
 		} catch (IOException e) {
 			reportError(e);
 		} catch (ConnectionException e) {
+			sid = null;
 			reportConnectionError(e);
 		}
 	}
@@ -205,12 +210,15 @@ public class GshShell {
 		if (response.statusCode == 200) {
 			println(response.responseString);
 		} else if (response.statusCode == 500) {
+			sid = null;
 			reportError("Server exception while executing script");
 			println("@|red Stack Trace:|@");
 			println(response.responseString);
 		} else if (response.statusCode == 410) {
+			sid = null;
 			reportError("Shell session timeout(@|red %s|@).", response.statusCode);
 		} else {
+			sid = null;
 			reportError("Unexpected server error(@|red %s|@).", response.statusCode);
 			println(response.responseString);
 		}

@@ -13,10 +13,6 @@ public class ConnectionException extends Exception {
 		super();
 	}
 
-	public ConnectionException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
-	}
-
 	public ConnectionException(String message, Throwable cause) {
 		super(message, cause);
 	}
