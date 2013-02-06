@@ -1,5 +1,8 @@
-TODO:
-1.locate java
-2.get jar file
-3.generate bootstrap script
-4.show install complete message 
+#!/bin/sh
+
+### Remote Groovy Shell installer for UN*X ###
+
+curl -s "$host?r=jar" -o ./rgsh.jar
+curl -s "$host?r=config" -o ./rgsh.properties
+curl -s "$host?r=rgsh" -o ./rgsh.sh
+chmod +x ./rgsh.sh

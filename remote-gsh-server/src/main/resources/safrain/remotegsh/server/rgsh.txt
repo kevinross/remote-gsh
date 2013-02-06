@@ -1,0 +1,6 @@
+#!/bin/sh
+
+### Remote Groovy Shell bootstrap for UN*X ###
+
+#TODO : add JAVA_CMD detection and error report
+java -jar ./rgsh.jar

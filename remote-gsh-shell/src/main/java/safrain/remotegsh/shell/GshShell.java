@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +40,7 @@ public class GshShell {
 	private GshConfig config = new GshConfig();
 
 	private HttpClient client = new HttpClient();
-	private static final File defaultConfigFile = new File("gsh.properties");
+	private static final File defaultConfigFile = new File("rgsh.properties");
 
 	private File configFile = defaultConfigFile;
 
@@ -261,7 +263,19 @@ public class GshShell {
 	 */
 	private void cmdServer(String[] args) {
 		if (args.length == 1) {
-			getConfig().setServer(args[0]);
+			String server = args[0];
+			URL url;
+			try {
+				url = new URL(server);
+			} catch (MalformedURLException e) {
+				try {
+					url = new URL("http://" + server);
+				} catch (MalformedURLException e1) {
+					reportError("Invalid server url '%s'", server);
+					return;
+				}
+			}
+			getConfig().setServer(url.toString());
 			try {
 				getConfig().save(getConfigFile());
 			} catch (IOException e) {

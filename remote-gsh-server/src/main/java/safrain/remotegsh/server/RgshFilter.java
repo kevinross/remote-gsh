@@ -1,14 +1,15 @@
 package safrain.remotegsh.server;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Map.Entry;
@@ -23,6 +24,7 @@ import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -36,10 +38,11 @@ import javax.servlet.http.HttpServletResponse;
  * <li><b>GET /admin/rgsh</b> Show welcome screen</li>
  * <li><b>GET /admin/rgsh?r=install</b> Download shell client install script</li>
  * <li><b>GET /admin/rgsh?r=shell</b> Request to start a shell session,return a
+ * <li><b>GET /admin/rgsh?r=rgsh</b> Download boostrap script</li>
+ * <li><b>GET /admin/rgsh?r=jar</b> Download client jar file</li>
  * new sid to the client</li>
  * <li><b>POST /admin/rgsh</b> Run script in request body</li>
- * <li><b>POST /admin/rgsh?shell=[sid]</b> blabla</li>
- * <li><b>GET /admin/rgsh</b> Execute shell command</li>
+ * <li><b>POST /admin/rgsh?shell=[sid]</b> Execute shell command</li>
  * </ul>
  * <br>
  * 
@@ -127,7 +130,14 @@ public class RgshFilter implements Filter {
 					performInstall(request, response);
 				} else if ("shell".equals(res)) {
 					performStartShell(request, response);
+				} else if ("jar".equals(res)) {
+					performJar(request, response);
+				} else if ("rgsh".equals(res)) {
+					performRgsh(request, response);
+				} else if ("config".equals(res)) {
+					performDefaultConfig(request, response);
 				}
+
 			} else {
 				performWelcomeScreen(request, response);
 			}
@@ -156,10 +166,43 @@ public class RgshFilter implements Filter {
 	}
 
 	/*
+	 * Download client jar file
+	 */
+	private void performJar(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		ServletOutputStream os = response.getOutputStream();
+		os.write(toBytes(RgshFilter.class.getClassLoader().getResourceAsStream(RESOURCE_PATH + "rgsh-client.jar")));
+		response.setStatus(200);
+	}
+
+	/*
+	 * Download bootstrap script
+	 */
+	private void performRgsh(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		response.getWriter().println(getResource(RESOURCE_PATH + "rgsh.txt", DEFAULT_CHARSET).replaceAll("\\$host", request.getRequestURL().toString()));
+		response.setStatus(200);
+	}
+
+	/*
+	 * Download bootstrap script
+	 */
+	private void performDefaultConfig(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		Properties properties = new Properties();
+		properties.put("server", request.getRequestURL().toString());
+		properties.put("charset", charset);
+		StringWriter sw = new StringWriter();
+		properties.store(sw, null);
+		response.getWriter().println(sw.getBuffer().toString());
+		response.setStatus(200);
+	}
+
+	/*
 	 * Download install script
 	 */
-	private void performInstall(HttpServletRequest request, HttpServletResponse response) {
-
+	private void performInstall(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		response.getWriter().println(
+				getResource(RESOURCE_PATH + "install.txt", DEFAULT_CHARSET).replaceAll("\\$host", request.getRequestURL().toString()).replaceAll("\\$charset",
+						charset));
+		response.setStatus(200);
 	}
 
 	/*
@@ -281,15 +324,21 @@ public class RgshFilter implements Filter {
 	/**
 	 * Input stream to string
 	 */
-	public static String toString(InputStream inputStream, String charset) throws IOException {
-		InputStreamReader reader = new InputStreamReader(inputStream, charset);
-		StringWriter sw = new StringWriter();
-		char[] buffer = new char[4096];
+	public static byte[] toBytes(InputStream inputStream) throws IOException {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		byte[] buffer = new byte[4096];
 		int readed;
-		while ((readed = reader.read(buffer)) != -1) {
-			sw.write(buffer, 0, readed);
+		while ((readed = inputStream.read(buffer)) != -1) {
+			bos.write(buffer, 0, readed);
 		}
-		return sw.getBuffer().toString();
+		return bos.toByteArray();
+	}
+
+	/**
+	 * Input stream to string
+	 */
+	public static String toString(InputStream inputStream, String charset) throws IOException {
+		return new String(toBytes(inputStream), charset);
 	}
 
 }
