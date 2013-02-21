@@ -26,7 +26,7 @@ public class HttpGetResourcesTest extends RgshTestSupport {
 	public void testGetHelpScreen() {
 		ServerResponse r = get("http://localhost:9527/admin/rgsh");
 		assertEquals(200, r.statusCode);
-		assertEquals(getResource("welcome.txt").replaceAll("\\$host", "http://localhost:9527/admin/rgsh") + "\n", r.responseString);
+		assertEquals(getResource("welcome.txt").replaceAll("\\{\\{server\\}\\}", "http://localhost:9527/admin/rgsh") + "\n", r.responseString);
 	}
 
 	@Test

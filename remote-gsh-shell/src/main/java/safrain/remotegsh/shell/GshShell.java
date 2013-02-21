@@ -1,14 +1,10 @@
 package safrain.remotegsh.shell;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -37,12 +33,7 @@ import org.fusesource.jansi.AnsiRenderer;
  * @author safrain
  */
 public class GshShell {
-	private GshConfig config = new GshConfig();
-
 	private HttpClient client = new HttpClient();
-	private static final File defaultConfigFile = new File("rgsh.properties");
-
-	private File configFile = defaultConfigFile;
 
 	private ConsoleReader consoleReader;
 
@@ -50,8 +41,20 @@ public class GshShell {
 
 	private String sid;
 
-	public void init() throws IOException {
-		config.load(configFile);
+	// ==========Configs==========
+	/**
+	 * Server address, with 'http://'
+	 */
+	public static final String DEFAULT_CHARSET = "utf-8";
+	public static final String DEFAULT_SERVER = "http://localhost/admin/rgsh";
+	private String server = DEFAULT_SERVER;
+	/**
+	 * Request & response charset
+	 */
+	private String fileCharset = DEFAULT_CHARSET;
+	private String requestCharset = DEFAULT_CHARSET;
+
+	public void initTerminal() throws IOException {
 		TerminalFactory.configure(TerminalFactory.Type.AUTO);
 		AnsiConsole.systemInstall();
 		Ansi.setDetector(new Callable<Boolean>() {
@@ -66,7 +69,7 @@ public class GshShell {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		StringsCompleter allCommands = new StringsCompleter("help", "quit", "exit", "run", "server");
+		StringsCompleter allCommands = new StringsCompleter("help", "quit", "exit", "run");
 		consoleReader.addCompleter(new ArgumentCompleter(new StringsCompleter("help"), allCommands));
 		consoleReader.addCompleter(allCommands);
 		consoleReader.addCompleter(new ArgumentCompleter(new StringsCompleter("run"), new FileNameCompleter()));
@@ -74,11 +77,14 @@ public class GshShell {
 
 	public void start() throws IOException {
 		println(getResourceString("welcome.txt"));
+		println("@|yellow Server|@: %s", server);
+		println("@|yellow File charset|@: %s", fileCharset);
+		println("@|yellow Request charset|@: %s", requestCharset);
 		cmdHelp(new String[] {});
-		connect();
+		ensureConnection();
 		String input = null;
 		while (true) {
-			input = consoleReader.readLine(AnsiRenderer.render(String.format("@|bold rgsh@%s>|@ ", config.getServer()))).trim();
+			input = consoleReader.readLine(AnsiRenderer.render(String.format("@|bold rgsh@%s>|@ ", server))).trim();
 			if (input.isEmpty()) {
 				continue;
 			}
@@ -100,12 +106,6 @@ public class GshShell {
 					ensureConnection();
 					cmdRun(parseArgs(input));
 					break;
-				case SERVER:
-					cmdServer(parseArgs(input));
-					break;
-				case CHARSET:
-					cmdCharset(parseArgs(input));
-					break;
 				}
 			} else {
 				ensureConnection();
@@ -115,31 +115,32 @@ public class GshShell {
 	}
 
 	// ==========Connection==========
-	private boolean ensureConnection() {
+	private void ensureConnection() {
 		if (sid == null) {
 			connect();
 		}
-		return sid != null;// in case of connection error
+		// return sid != null;// in case of connection error
 	}
 
-	private void connect() {
+	public boolean connect() {
 		ServerResponse response = null;
 		try {
-			response = httpGet(getConfig().getServer() + "?r=shell");
+			response = httpGet(server + "?r=shell");
 		} catch (ConnectionException e) {
 			reportConnectionError(e);
-			return;
+			return false;
 		}
 
 		if (response.statusCode == 200) {
 			// TODO:get auto complete hints
 			sid = response.responseString;
-			println("@|green CONNECTED|@: Connected to server, SessionId = @|blue %s|@.", sid);
+			println("@|green CONNECTED|@: Connected to @|blue %s|@, SessionId = @|blue %s|@.", server, sid);
+			return true;
 		} else {
 			sid = null;
 			reportError("Could not start shell session(@|red %s|@).", response.statusCode);
 			println(response.responseString);
-			return;
+			return false;
 		}
 	}
 
@@ -169,10 +170,10 @@ public class GshShell {
 	/**
 	 * Execute groovy script from shell input on server
 	 */
-	private void shellExecute(String input) {
+	public void shellExecute(String input) {
 		ServerResponse response;
 		try {
-			response = post(getConfig().getServer() + "?sid=" + sid, input);
+			response = post(server + "?sid=" + sid, input);
 		} catch (ConnectionException e) {
 			reportConnectionError(e);
 			return;
@@ -183,7 +184,7 @@ public class GshShell {
 	/**
 	 * Upload a groovy script file and execute on server
 	 */
-	private void cmdRun(String[] args) {
+	public void cmdRun(String[] args) {
 		if (args.length != 1) {
 			reportError("Must specify script file name.");
 			return;
@@ -191,8 +192,8 @@ public class GshShell {
 		String filename = args[0];
 		try {
 			FileInputStream fis = new FileInputStream(filename);
-			String content = IOUtils.toString(fis, getConfig().getCharset());
-			ServerResponse response = post(getConfig().getServer(), content);
+			String content = IOUtils.toString(fis, fileCharset);
+			ServerResponse response = post(server, content);
 			dealExecuteResponse(response);
 		} catch (FileNotFoundException e) {
 			println("File '%s' not found.", filename);
@@ -212,7 +213,6 @@ public class GshShell {
 		if (response.statusCode == 200) {
 			println(response.responseString);
 		} else if (response.statusCode == 500) {
-			sid = null;
 			reportError("Server exception while executing script");
 			println("@|red Stack Trace:|@");
 			println(response.responseString);
@@ -229,7 +229,7 @@ public class GshShell {
 	/**
 	 * Show help info
 	 */
-	private void cmdHelp(String[] args) {
+	public void cmdHelp(String[] args) {
 		if (args.length == 1) {
 			GshCommand c = GshCommand.getCommand(args[0]);
 			if (c != null) {
@@ -243,12 +243,6 @@ public class GshShell {
 				case RUN:
 					println(getResourceString("help/run.txt"));
 					break;
-				case SERVER:
-					println(getResourceString("help/server.txt"));
-					break;
-				case CHARSET:
-					println(getResourceString("help/charset.txt"));
-					break;
 				default:
 					break;
 				}
@@ -259,64 +253,14 @@ public class GshShell {
 	}
 
 	/**
-	 * Show or modify server address
-	 */
-	private void cmdServer(String[] args) {
-		if (args.length == 1) {
-			String server = args[0];
-			URL url;
-			try {
-				url = new URL(server);
-			} catch (MalformedURLException e) {
-				try {
-					url = new URL("http://" + server);
-				} catch (MalformedURLException e1) {
-					reportError("Invalid server url '%s'", server);
-					return;
-				}
-			}
-			getConfig().setServer(url.toString());
-			try {
-				getConfig().save(getConfigFile());
-			} catch (IOException e) {
-				reportError(e);
-				return;
-			}
-		}
-		println("Current server url is '%s'", getConfig().getServer());
-	}
-
-	/**
-	 * Show or modify charset
-	 */
-	private void cmdCharset(String[] args) {
-		if (args.length == 1) {
-			try {
-				Charset.forName(args[0]);
-			} catch (Exception e) {
-				reportError("Illegal charset '%s'.", args[0]);
-				return;
-			}
-			getConfig().setCharset(args[0]);
-			try {
-				getConfig().save(getConfigFile());
-			} catch (IOException e) {
-				reportError(e);
-				return;
-			}
-		}
-		println("Current charset is '%s'", getConfig().getCharset());
-	}
-
-	/**
 	 * Just exit the shell
 	 */
-	private void cmdExit() {
+	public void cmdExit() {
 		println("Bye~");
 		System.exit(0);
 	}
 
-	// ==========Utilities==========
+	// ==========Resource Utilities==========
 	private String getResourceString(String name) {
 		try {
 			InputStream is = getClass().getClassLoader().getResourceAsStream("safrain/remotegsh/shell/" + name);
@@ -337,7 +281,7 @@ public class GshShell {
 		ServerResponse r = new ServerResponse();
 		try {
 			int statusCode = client.executeMethod(get);
-			String responseString = new String(get.getResponseBody(), getConfig().getCharset());
+			String responseString = new String(get.getResponseBody(), requestCharset);
 			r.statusCode = statusCode;
 			r.responseString = responseString;
 		} catch (Exception e) {
@@ -351,9 +295,9 @@ public class GshShell {
 		try {
 			PostMethod post = new PostMethod(uri);
 			post.getParams().setCookiePolicy(CookiePolicy.RFC_2109);
-			post.setRequestEntity(new StringRequestEntity(content, "text", getConfig().getCharset()));
+			post.setRequestEntity(new StringRequestEntity(content, "text", requestCharset));
 			int statusCode = client.executeMethod(post);
-			String responseString = new String(post.getResponseBody(), getConfig().getCharset());
+			String responseString = new String(post.getResponseBody(), requestCharset);
 			r.statusCode = statusCode;
 			r.responseString = responseString;
 		} catch (Exception e) {
@@ -364,7 +308,7 @@ public class GshShell {
 
 	// ==========Console output utilities==========
 	private void reportConnectionError(ConnectionException e) {
-		reportError("Failed to connect to '%s'", getConfig().getServer());
+		reportError("Failed to connect to '%s'", server);
 		e.getCause().printStackTrace(out);
 	}
 
@@ -381,20 +325,29 @@ public class GshShell {
 		println("@|red ERROR:|@ " + format, args);
 	}
 
-	public File getConfigFile() {
-		return configFile;
+	// ==========Getter/Setter==========
+	public String getServer() {
+		return server;
 	}
 
-	public void setConfigFile(File configFile) {
-		this.configFile = configFile;
+	public void setServer(String server) {
+		this.server = server;
 	}
 
-	public GshConfig getConfig() {
-		return config;
+	public String getFileCharset() {
+		return fileCharset;
 	}
 
-	public void setConfig(GshConfig config) {
-		this.config = config;
+	public void setFileCharset(String fileCharset) {
+		this.fileCharset = fileCharset;
+	}
+
+	public String getRequestCharset() {
+		return requestCharset;
+	}
+
+	public void setRequestCharset(String requestCharset) {
+		this.requestCharset = requestCharset;
 	}
 
 }

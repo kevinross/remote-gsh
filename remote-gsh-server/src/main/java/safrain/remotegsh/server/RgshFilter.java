@@ -4,15 +4,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
+import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -65,6 +63,9 @@ public class RgshFilter implements Filter {
 	private static final String RESOURCE_PATH = "safrain/remotegsh/server/";
 	private static final String DEFAULT_CHARSET = "utf-8";
 	private static final long SESSION_PURGE_INTERVAL = 1000 * 60 * 5L;// 5 min
+	private static final String PLACEHOLDER_SERVER = "\\{\\{server\\}\\}";
+	private static final String PLACEHOLDER_CHARSET = "\\{\\{charset\\}\\}";
+	private static final String JAR_NAME = "rgsh-client.jar";
 	/**
 	 * Request & response charset
 	 */
@@ -134,8 +135,6 @@ public class RgshFilter implements Filter {
 					performJar(request, response);
 				} else if ("rgsh".equals(res)) {
 					performRgsh(request, response);
-				} else if ("config".equals(res)) {
-					performDefaultConfig(request, response);
 				}
 
 			} else {
@@ -160,8 +159,9 @@ public class RgshFilter implements Filter {
 	 * Welcome Screen
 	 */
 	private void performWelcomeScreen(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		System.out.println(getResource(RESOURCE_PATH + "welcome.txt", DEFAULT_CHARSET));
-		response.getWriter().println(getResource(RESOURCE_PATH + "welcome.txt", DEFAULT_CHARSET).replaceAll("\\$host", request.getRequestURL().toString()));
+		response.getWriter().println(
+				getResource(RESOURCE_PATH + "welcome.txt", DEFAULT_CHARSET).replaceAll(PLACEHOLDER_SERVER,
+						request.getRequestURL().toString()));
 		response.setStatus(200);
 	}
 
@@ -170,7 +170,7 @@ public class RgshFilter implements Filter {
 	 */
 	private void performJar(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		ServletOutputStream os = response.getOutputStream();
-		os.write(toBytes(RgshFilter.class.getClassLoader().getResourceAsStream(RESOURCE_PATH + "rgsh-client.jar")));
+		os.write(toBytes(RgshFilter.class.getClassLoader().getResourceAsStream(RESOURCE_PATH + JAR_NAME)));
 		response.setStatus(200);
 	}
 
@@ -178,20 +178,9 @@ public class RgshFilter implements Filter {
 	 * Download bootstrap script
 	 */
 	private void performRgsh(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		response.getWriter().println(getResource(RESOURCE_PATH + "rgsh.txt", DEFAULT_CHARSET).replaceAll("\\$host", request.getRequestURL().toString()));
-		response.setStatus(200);
-	}
-
-	/*
-	 * Download bootstrap script
-	 */
-	private void performDefaultConfig(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		Properties properties = new Properties();
-		properties.put("server", request.getRequestURL().toString());
-		properties.put("charset", charset);
-		StringWriter sw = new StringWriter();
-		properties.store(sw, null);
-		response.getWriter().println(sw.getBuffer().toString());
+		response.getWriter().println(
+				getResource(RESOURCE_PATH + "rgsh.txt", DEFAULT_CHARSET).replaceAll(PLACEHOLDER_SERVER, request.getRequestURL().toString())
+						.replaceAll(PLACEHOLDER_CHARSET, charset));
 		response.setStatus(200);
 	}
 
@@ -200,8 +189,8 @@ public class RgshFilter implements Filter {
 	 */
 	private void performInstall(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		response.getWriter().println(
-				getResource(RESOURCE_PATH + "install.txt", DEFAULT_CHARSET).replaceAll("\\$host", request.getRequestURL().toString()).replaceAll("\\$charset",
-						charset));
+				getResource(RESOURCE_PATH + "install.txt", DEFAULT_CHARSET).replaceAll(PLACEHOLDER_SERVER,
+						request.getRequestURL().toString()).replaceAll(PLACEHOLDER_CHARSET, charset));
 		response.setStatus(200);
 	}
 

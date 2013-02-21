@@ -11,8 +11,7 @@ import java.util.regex.Pattern;
 public enum GshCommand {
 	HELP("help|\\?"), //
 	EXIT("quit|exit"), //
-	RUN("run"), //
-	SERVER("server"), CHARSET("charset|encoding");
+	RUN("run"); //
 
 	private Pattern pattern;
 

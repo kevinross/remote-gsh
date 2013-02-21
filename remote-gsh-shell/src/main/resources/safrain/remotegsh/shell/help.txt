@@ -8,7 +8,6 @@ Available commands:
   @|bold exit|@		Exit the shell
   @|bold quit|@		Alias to: exit
   @|bold run|@		Send a local script file to run at server
-  @|bold server|@	Display (or set) server url
 
 For help on a specific command type:
     @|bold help|@ command 

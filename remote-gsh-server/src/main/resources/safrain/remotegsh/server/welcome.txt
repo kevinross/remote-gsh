@@ -13,14 +13,14 @@
  Usage:
  
  * Show this screen
-          curl -s "$host"
+          curl -s "{{server}}"
           
  * Run script on server
-          curl -s -X POST "$host" -T <local script file>
+          curl -s -X POST "{{server}}" -T <local script file>
           	or
-          curl -s -X POST "$host" -d <script text>
+          curl -s -X POST "{{server}}" -d <script text>
  
  * Install client
-          curl -s "$host?r=install" -o /tmp/ri;chmod +x /tmp/ri;/tmp/ri;
+          curl -s "{{server}}?r=install" | bash
           
 
