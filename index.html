@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <title>Remote Groovy Shell by safrain</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Remote Groovy Shell</h1>
+        <h2> remote groovy shell groovysh</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/safrain/remote-gsh/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/safrain/remote-gsh/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/safrain/remote-gsh" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1>Remote Groovy Shell</h1>
+
+<p>Remote Groovy Shell is a light weight debugging/management tool embbeded in Java servlet web applications.</p>
+
+<p>You can interact with you application with groovy language in a bash like shell, jush like using groovysh.</p>
+
+<p>Through this Remote Groovy Shell, you can do a lot of fantastic things to you application when its running, with the power of groovy language.</p>
+
+<h2>Motivations</h2>
+
+<ul>
+<li>I want to inspect bean properties without attach &amp; debug to jvm</li>
+<li>I want to call specific method of a bean without add any fxxking jsps</li>
+<li>I want to mock some behavior conveniently </li>
+<li>I want to modify specific property of a bean and see what happens without editing the code and restarting the application</li>
+<li>I want to hot replace some class</li>
+</ul><h2>Features</h2>
+
+<ul>
+<li>Execute groovy command or local script file at remote server </li>
+<li>Lightweighted, no additional dependencies(except groovy runtime), easy to embed into your project</li>
+<li>Bash like client, no manual installation required, just one command to get everything done</li>
+<li>Easy to extend to support various web application frameworks</li>
+</ul><h2>User Guide</h2>
+
+<h3>Embbed rgsh in you project</h3>
+
+<h4>Add <em>Rgsh</em> and <em>Groovy Runtime</em> to your classpath</h4>
+
+<p>Add following jars into you classpath</p>
+
+<ul>
+<li><a href="http://g.cn">Rgsh</a></li>
+<li><a href="http://g.cn">Groovy Runtime</a></li>
+</ul><p>For maven projects, add below content into you pom</p>
+
+<pre><code>TODO
+</code></pre>
+
+<h4>Configure RgshFilter</h4>
+
+<p>Add following filter configure into your <em>web.xml</em></p>
+
+<pre><code>&lt;filter&gt;
+    &lt;filter-name&gt;Rgsh&lt;/filter-name&gt;
+    &lt;filter-class&gt;safrain.remotegsh.server.RgshFilter&lt;/filter-class&gt;
+&lt;/filter&gt;
+&lt;filter-mapping&gt;
+    &lt;filter-name&gt;Rgsh&lt;/filter-name&gt;
+    &lt;url-pattern&gt;/admin/rgsh&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;
+</code></pre>
+
+<p><strong>Attention:Exposing this filter may cause serious security problems, make sure you have ACL on this</strong></p>
+
+<h3>Using shell client</h3>
+
+<h4>Install</h4>
+
+<p>TODO</p>
+
+<h4>Using interactive shell</h4>
+
+<p>TODO</p>
+
+<h4>Upload script and run</h4>
+
+<p>TODO</p>
+
+<h4>Settings</h4>
+
+<p>TODO</p>
+
+<h3>Extending</h3>
+
+<h4>Custiom init script</h4>
+
+<p>TODO</p>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
