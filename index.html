@@ -1,33 +1,35 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
-
     <title>Remote Groovy Shell by safrain</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
-
   <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Remote Groovy Shell</h1>
+        <p class="header">Lightweight debugging / management tool for Java servlet web applications</p>
 
-    <header>
-      <div class="container">
-        <h1>Remote Groovy Shell</h1>
-        <h2> remote groovy shell groovysh</h2>
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/safrain/remote-gsh/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/safrain/remote-gsh/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/safrain/remote-gsh">View On GitHub</a></li>
+        </ul>
 
-        <section id="downloads">
-          <a href="https://github.com/safrain/remote-gsh/zipball/master" class="btn">Download as .zip</a>
-          <a href="https://github.com/safrain/remote-gsh/tarball/master" class="btn">Download as .tar.gz</a>
-          <a href="https://github.com/safrain/remote-gsh" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
-        </section>
-      </div>
-    </header>
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/safrain">safrain</a></p>
 
-    <div class="container">
-      <section id="main_content">
+
+      </header>
+      <section>
         <h1>Remote Groovy Shell</h1>
 
 <p>Remote Groovy Shell is a light weight debugging/management tool embbeded in Java servlet web applications.</p>
@@ -39,7 +41,7 @@
 <h2>Motivations</h2>
 
 <ul>
-<li>I want to inspect bean properties without attach &amp; debug to jvm</li>
+<li>I want to inspect bean properties without attach &amp; debug jvm</li>
 <li>I want to call specific method of a bean without add any fxxking jsps</li>
 <li>I want to mock some behavior conveniently </li>
 <li>I want to modify specific property of a bean and see what happens without editing the code and restarting the application</li>
@@ -53,23 +55,33 @@
 <li>Easy to extend to support various web application frameworks</li>
 </ul><h2>User Guide</h2>
 
+<h3>Some Examples</h3>
+
+<p>TODO</p>
+
 <h3>Embbed rgsh in you project</h3>
 
-<h4>Add <em>Rgsh</em> and <em>Groovy Runtime</em> to your classpath</h4>
-
-<p>Add following jars into you classpath</p>
+<p>1.Add following jars into you classpath</p>
 
 <ul>
-<li><a href="http://g.cn">Rgsh</a></li>
-<li><a href="http://g.cn">Groovy Runtime</a></li>
+<li>
+<a href="http://g.cn">Remote Groovy Shell</a> TODO</li>
+<li>
+<a href="http://groovy.codehaus.org/Download">Groovy Runtime</a> Any version greater than 1.8.6 is OK </li>
 </ul><p>For maven projects, add below content into you pom</p>
 
 <pre><code>TODO
+
+&lt;dependency&gt;
+    &lt;groupId&gt;org.codehaus.groovy&lt;/groupId&gt;
+    &lt;artifactId&gt;groovy-all&lt;/artifactId&gt;
+    &lt;version&gt;1.8.9&lt;/version&gt;
+&lt;/dependency&gt;
 </code></pre>
 
-<h4>Configure RgshFilter</h4>
+<p>2.Add RgshFilter configuration into your <em>web.xml</em></p>
 
-<p>Add following filter configure into your <em>web.xml</em></p>
+<p><strong>Attention:Exposing this filter may cause serious security problems, make sure you have ACL on this</strong></p>
 
 <pre><code>&lt;filter&gt;
     &lt;filter-name&gt;Rgsh&lt;/filter-name&gt;
@@ -81,25 +93,57 @@
 &lt;/filter-mapping&gt;
 </code></pre>
 
-<p><strong>Attention:Exposing this filter may cause serious security problems, make sure you have ACL on this</strong></p>
+<p><strong>Filter init params</strong></p>
+
+<p><em>charset</em> Request and Response character encoding, 'utf-8' as default.</p>
+
+<p><em>initScriptPath</em> Init script classpath, 'safrain/remotegsh/server/init.groovy' as default.</p>
+
+<p><em>initScriptCharset</em> Init script content charset, 'utf-8' as default.</p>
 
 <h3>Using shell client</h3>
 
+<p>Assume that you configured RgshFilter in you application at http://localhost/, '/admin/rgsh' as url pattern:</p>
+
+<h4>Show help screen</h4>
+
+<pre><code>curl -s http://localhost/admin/rgsh
+</code></pre>
+
+<p>Then you can follow the instructions shown on the screen.</p>
+
 <h4>Install</h4>
 
-<p>TODO</p>
+<pre><code>curl -s http://localhost/admin/rgsh?r=install | bash
+</code></pre>
 
-<h4>Using interactive shell</h4>
+<p>Two file will be downloaded to your current folder, an executable jar file <em>rgsh.jar</em> and a bash script  <em>rgsh</em>.</p>
 
-<p>TODO</p>
+<p>Your server host and RgshFilter charset setting will be write into <em>rgsh</em> as its default settings.</p>
+
+<h4>Starting interactive shell</h4>
+
+<pre><code>./rgsh
+</code></pre>
+
+<p>Then feel free to use as a common groovy shell.</p>
+
+<p>Use -s switch to specify server host url.</p>
+
+<p>Use -r switch to specify request charset.</p>
 
 <h4>Upload script and run</h4>
 
-<p>TODO</p>
+<pre><code>./rgsh foobar.groovy    
+</code></pre>
 
-<h4>Settings</h4>
+<p>Use -f switch to specify script file encoding</p>
 
-<p>TODO</p>
+<p>Use -r switch to specify request charset.</p>
+
+<h4>Default Settings</h4>
+
+<p>Just Edit <em>rgsh</em> and modify DEFAULT_SERVER, DEFAULT_FILE_CHARSET and DEFAULT_REQUEST_CHARSET variable</p>
 
 <h3>Extending</h3>
 
@@ -107,8 +151,11 @@
 
 <p>TODO</p>
       </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
     </div>
-
-    
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
   </body>
 </html>
