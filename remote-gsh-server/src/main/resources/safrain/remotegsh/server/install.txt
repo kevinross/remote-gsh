@@ -2,7 +2,7 @@
 
 #Remote Groovy Shell installer for UN*X
 
-curl -s "{{server}}?r=jar" -o ./rgsh.jar
+curl -s "{{server}}?r=jar" -o ./remote-gsh-shell-${shell.version}.jar
 curl -s "{{server}}?r=rgsh" -o ./rgsh
 chmod +x ./rgsh
 

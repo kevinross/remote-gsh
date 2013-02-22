@@ -65,7 +65,7 @@ public class RgshFilter implements Filter {
 	private static final long SESSION_PURGE_INTERVAL = 1000 * 60 * 5L;// 5 min
 	private static final String PLACEHOLDER_SERVER = "\\{\\{server\\}\\}";
 	private static final String PLACEHOLDER_CHARSET = "\\{\\{charset\\}\\}";
-	private static final String JAR_NAME = "rgsh-client.jar";
+	private static final String JAR_NAME = "rgsh.jar";
 	/**
 	 * Request & response charset
 	 */

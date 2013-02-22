@@ -83,10 +83,10 @@ done
 #TODO : add JAVA_CMD detection and error report
 if [ $# = 0 ];then
         #Start shell
-        java -Dserver=$server -Dfile-charset=$file_charset -Drequest-charset=$request_charset -jar rgsh.jar
+        java -Dserver=$server -Dfile-charset=$file_charset -Drequest-charset=$request_charset -jar remote-gsh-shell-${shell.version}.jar
 elif [ $# = 1 ];then
         #Run script
-        java -Dserver=$server -Dfile-charset=$file_charset -Drequest-charset=$request_charset -jar rgsh.jar run $1
+        java -Dserver=$server -Dfile-charset=$file_charset -Drequest-charset=$request_charset -jar remote-gsh-shell-${shell.version}.jar run $1
 else
         usage;
 fi

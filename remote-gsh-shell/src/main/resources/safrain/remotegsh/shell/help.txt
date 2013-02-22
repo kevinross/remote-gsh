@@ -3,11 +3,11 @@ For information about Remote Groovy Shell, visit:
     @|blue https://github.com/safrain/remote-gsh|@ 
 
 Available commands:
-  @|bold help|@		Display this help message
-  @|bold ?|@		Alias to: help
-  @|bold exit|@		Exit the shell
-  @|bold quit|@		Alias to: exit
-  @|bold run|@		Send a local script file to run at server
+  @|bold help|@    Display this help message
+  @|bold ?   |@    Alias to: help
+  @|bold exit|@    Exit the shell
+  @|bold quit|@    Alias to: exit
+  @|bold run |@    Send a local script file to run at server
 
 For help on a specific command type:
-    @|bold help|@ command 
+  @|bold help|@ command 
