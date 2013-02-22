@@ -1,12 +1,18 @@
 # Remote Groovy Shell
-Remote Groovy Shell is a light weight tool embbeded in Java servlet web applications.
+Remote Groovy Shell is a light weight debugging/management tool embbeded in Java servlet web applications.
 
-You can interact with you server with groovy language in a bash like shell, jush like using groovysh
+You can interact with you application with groovy language in a bash like shell, jush like using groovysh.
+
+Through this Remote Groovy Shell, you can do a lot of fantastic things to you application when its running, with the power of groovy language.
 
 - - -
 ## Motivations
 
-TODO
+- I want to inspect bean properties without attach & debug to jvm
+- I want to call specific method of a bean without add any fxxking jsps
+- I want to mock some behavior conveniently 
+- I want to modify specific property of a bean and see what happens without editing the code and restarting the application
+- I want to hot replace some class
 
 - - -
 
