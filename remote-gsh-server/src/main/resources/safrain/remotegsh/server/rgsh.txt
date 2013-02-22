@@ -14,7 +14,7 @@ request_charset=$DEFAULT_REQUEST_CHARSET
 
 usage () {
         echo ""
-        echo "Remote Groovy Shell v0.1"
+        echo "Remote Groovy Shell Client v${shell.version}"
         echo ""
         echo "Usage: $0 [FILE] [OPTIONS]"
         echo ""

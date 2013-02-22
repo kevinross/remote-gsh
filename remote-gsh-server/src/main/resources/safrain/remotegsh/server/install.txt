@@ -5,4 +5,9 @@
 curl -s "{{server}}?r=jar" -o ./rgsh.jar
 curl -s "{{server}}?r=rgsh" -o ./rgsh
 chmod +x ./rgsh
+
+echo ""
+echo "Installation complete."
+echo ""
+
 ./rgsh --help
