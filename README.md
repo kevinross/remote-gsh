@@ -5,16 +5,13 @@ You can interact with you application with groovy language in a bash like shell,
 
 Through this Remote Groovy Shell, you can do a lot of fantastic things to you application when its running, with the power of groovy language.
 
-- - -
 ## Motivations
 
-- I want to inspect bean properties without attach & debug to jvm
+- I want to inspect bean properties without attach & debug jvm
 - I want to call specific method of a bean without add any fxxking jsps
 - I want to mock some behavior conveniently 
 - I want to modify specific property of a bean and see what happens without editing the code and restarting the application
 - I want to hot replace some class
-
-- - -
 
 ## Features
 
@@ -23,25 +20,32 @@ Through this Remote Groovy Shell, you can do a lot of fantastic things to you ap
 - Bash like client, no manual installation required, just one command to get everything done
 - Easy to extend to support various web application frameworks
 
-- - -
-
 ## User Guide
-###  Embbed rgsh in you project
 
-#### Add *Rgsh* and *Groovy Runtime* to your classpath
+### Some Examples
 
-Add following jars into you classpath
+TODO
 
-- [Rgsh](http://g.cn)
-- [Groovy Runtime](http://g.cn)
+### Embbed rgsh in you project
+
+1.Add following jars into you classpath
+
+- [Remote Groovy Shell](http://g.cn) TODO
+- [Groovy Runtime](http://groovy.codehaus.org/Download) Any version greater than 1.8.6 is OK 
 
 For maven projects, add below content into you pom
 
 	TODO
 
-#### Configure RgshFilter
+	<dependency>
+		<groupId>org.codehaus.groovy</groupId>
+		<artifactId>groovy-all</artifactId>
+		<version>1.8.9</version>
+	</dependency>
+            
+2.Add RgshFilter configuration into your *web.xml*
 
-Add following filter configure into your *web.xml*
+**Attention:Exposing this filter may cause serious security problems, make sure you have ACL on this**
 
 	<filter>
 		<filter-name>Rgsh</filter-name>
@@ -52,24 +56,54 @@ Add following filter configure into your *web.xml*
 		<url-pattern>/admin/rgsh</url-pattern>
 	</filter-mapping>
 
-**Attention:Exposing this filter may cause serious security problems, make sure you have ACL on this**
+**Filter init params**
+
+*charset* Request and Response character encoding, 'utf-8' as default.
+
+*initScriptPath* Init script classpath, 'safrain/remotegsh/server/init.groovy' as default.
+
+*initScriptCharset* Init script content charset, 'utf-8' as default.
+
 
 ### Using shell client
+
+Assume that you configured RgshFilter in you application at http://localhost/, '/admin/rgsh' as url pattern:
+
+#### Show help screen
+
+	curl -s http://localhost/admin/rgsh
+
+Then you can follow the instructions shown on the screen.
+
 #### Install
 
-TODO
+	curl -s http://localhost/admin/rgsh?r=install | bash
 
-#### Using interactive shell
+Two file will be downloaded to your current folder, an executable jar file *rgsh.jar* and a bash script  *rgsh*.
 
-TODO
+Your server host and RgshFilter charset setting will be write into *rgsh* as its default settings.
+
+#### Starting interactive shell
+
+	./rgsh
+
+Then feel free to use as a common groovy shell.
+
+Use -s switch to specify server host url.
+
+Use -r switch to specify request charset.
 
 #### Upload script and run
 
-TODO
+	./rgsh foobar.groovy	
 
-#### Settings
+Use -f switch to specify script file encoding
 
-TODO
+Use -r switch to specify request charset.
+
+#### Default Settings
+
+Just Edit *rgsh* and modify DEFAULT\_SERVER, DEFAULT\_FILE\_CHARSET and DEFAULT\_REQUEST\_CHARSET variable
 
 ### Extending
 
