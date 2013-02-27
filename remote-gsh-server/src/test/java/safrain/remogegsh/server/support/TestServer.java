@@ -4,13 +4,11 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.mortbay.jetty.Handler;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.handler.RequestLogHandler;
-import org.mortbay.jetty.servlet.Context;
-import org.mortbay.jetty.servlet.DefaultServlet;
-import org.mortbay.jetty.servlet.FilterHolder;
-import org.mortbay.jetty.servlet.SessionHandler;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.ContextHandler.Context;
+import org.eclipse.jetty.server.handler.RequestLogHandler;
+import org.eclipse.jetty.server.session.SessionHandler;
 
 import safrain.remotegsh.server.RgshFilter;
 
@@ -19,8 +17,7 @@ public class TestServer {
 
 	public void startServer() {
 		server = new Server(9527);
-
-		Context context = new Context();
+		Context context =new Context();
 		context.setContextPath("/");
 		context.setSessionHandler(new SessionHandler());
 		context.addServlet(DefaultServlet.class, "/*");

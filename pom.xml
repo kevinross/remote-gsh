@@ -10,10 +10,12 @@
 	<modules>
 		<module>remote-gsh-shell</module>
 		<module>remote-gsh-server</module>
+		<module>remote-gsh-example</module>
 	</modules>
 	<properties>
 		<server.version>0.1-SNAPSHOT</server.version>
 		<shell.version>0.1-SNAPSHOT</shell.version>
+		<example.version>0.1-SNAPSHOT</example.version>
 	</properties>
 	<build>
 		<resources>
