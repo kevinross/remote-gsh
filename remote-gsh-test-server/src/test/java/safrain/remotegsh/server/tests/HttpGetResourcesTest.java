@@ -1,12 +1,9 @@
-package safrain.remogegsh.server.tests;
+package safrain.remotegsh.server.tests;
 
-import static junit.framework.Assert.assertEquals;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+import safrain.remotegsh.server.support.RgshTestSupport;
 
-import safrain.remogegsh.server.support.RgshTestSupport;
+import static org.junit.Assert.assertEquals;
 
 /**
  * <p>
@@ -17,28 +14,17 @@ import safrain.remogegsh.server.support.RgshTestSupport;
  */
 public class HttpGetResourcesTest extends RgshTestSupport {
 
-	@Before
-	public void setup() {
-		startServer();
-	}
-
 	@Test
 	public void testGetHelpScreen() {
-		ServerResponse r = get("http://localhost:9527/admin/rgsh");
+		ServerResponse r = get("http://localhost/admin/rgsh");
 		assertEquals(200, r.statusCode);
 		assertEquals(getResource("welcome.txt").replaceAll("\\{\\{server\\}\\}", "http://localhost:9527/admin/rgsh") + "\n", r.responseString);
 	}
 
 	@Test
 	public void testGetStartShellSession() {
-		ServerResponse r = get("http://localhost:9527/admin/rgsh?r=shell");
+		ServerResponse r = get("http://localhost/admin/rgsh?r=shell");
 		assertEquals(200, r.statusCode);
 		assertEquals(32, r.responseString.length());
-	}
-
-	// TODO:install client
-	@After
-	public void cleanup() {
-		stopServer();
 	}
 }

@@ -1,4 +1,4 @@
-package safrain.remogegsh.server.tests;
+package safrain.remotegsh.server.tests;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
