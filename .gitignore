@@ -2,6 +2,7 @@
 # Targets #
 remote-gsh-server/target
 remote-gsh-shell/target
+remote-gsh-example/target
 
 # Package Files #
 *.jar
