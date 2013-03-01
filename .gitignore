@@ -15,3 +15,6 @@ remote-gsh-shell/target
 
 # VIM swap files #
 *.swp
+
+# Idea Project Files #
+idea
