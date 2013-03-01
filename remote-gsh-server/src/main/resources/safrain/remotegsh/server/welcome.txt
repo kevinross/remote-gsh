@@ -19,9 +19,7 @@
           
  * Run script on server
           curl -s -X POST "{{server}}" -T <local script file>
-          	or
-          curl -s -X POST "{{server}}" -d <script text>
- 
+
  * Install client
           curl -s "{{server}}?r=install" | bash
           
