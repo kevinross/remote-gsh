@@ -1,10 +1,10 @@
-package safrain.remotegsh.server.tests;
+package safrain.remotegsh.server;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({HttpGetResourcesTest.class})
+@SuiteClasses({})
 public class RgshTestSuite {
 }
