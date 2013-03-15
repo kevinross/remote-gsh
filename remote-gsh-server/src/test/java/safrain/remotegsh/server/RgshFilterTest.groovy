@@ -16,6 +16,9 @@ import static org.junit.Assert.assertNotNull;
  * RgshFilter Unit Tests
  * <p/>
  * Get welcome screen
+ * Install script
+ * Bootstrap Script
+ * Shell
  */
 public class RgshFilterTest {
     StringWriter responseWriter
@@ -42,7 +45,7 @@ public class RgshFilterTest {
         } as IAnswer
         ).anyTimes()
 
-        expect(request.getInputStream()).andReturn(new DelegeteServletInputStream(input)
+        expect(request.getInputStream()).andReturn(new DelegateServletInputStream(input)
         );
         expect(request.getRequestURL()).andReturn(new StringBuffer(HOST_URL))
         return request
@@ -117,8 +120,8 @@ public class RgshFilterTest {
         assertEquals(session, filter.shellSessions[sid])
     }
 }
-class DelegeteServletInputStream extends ServletInputStream {
-    DelegeteServletInputStream(InputStream inputStream) {
+class DelegateServletInputStream extends ServletInputStream {
+    DelegateServletInputStream(InputStream inputStream) {
         this.inputStream = inputStream
     }
 
