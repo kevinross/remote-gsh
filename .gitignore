@@ -19,4 +19,4 @@ remote-gsh-test/target
 *.swp
 
 # Idea Project Files #
-idea
+.idea
