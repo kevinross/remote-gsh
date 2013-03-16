@@ -55,10 +55,6 @@
 <li>Easy to extend to support various web application frameworks</li>
 </ul><h2>User Guide</h2>
 
-<h3>Some Examples</h3>
-
-<p>TODO</p>
-
 <h3>Embbed rgsh in you project</h3>
 
 <p>1.Add following jars into you classpath</p>
@@ -70,7 +66,7 @@
 <a href="http://groovy.codehaus.org/Download">Groovy Runtime</a> Any version greater than 1.8.6 is OK </li>
 </ul><p>For maven projects, add below content into you pom</p>
 
-<pre><code>TODO
+<pre><code>TODO, im uploading it to maven central
 
 &lt;dependency&gt;
     &lt;groupId&gt;org.codehaus.groovy&lt;/groupId&gt;
@@ -85,7 +81,7 @@
 
 <pre><code>&lt;filter&gt;
     &lt;filter-name&gt;Rgsh&lt;/filter-name&gt;
-    &lt;filter-class&gt;safrain.remotegsh.server.RgshFilter&lt;/filter-class&gt;
+    &lt;filter-class&gt;com.github.safrain.remotegsh.RgshFilter&lt;/filter-class&gt;
 &lt;/filter&gt;
 &lt;filter-mapping&gt;
     &lt;filter-name&gt;Rgsh&lt;/filter-name&gt;
@@ -147,9 +143,36 @@
 
 <h3>Extending</h3>
 
-<h4>Custiom init script</h4>
+<h4>Customizing the init script</h4>
 
-<p>TODO</p>
+<p>An <em>init script</em> will be executed before script you uploaded(or before your first shell command),
+by default the script is <em>com/github/safrain/remotegsh/server/init.groovy</em> but you can customize it using filter init parameter <em>initScriptPath</em>
+In the init script, you can put some vairables into the script context, by default, <em>_context</em> and <em>getbean</em> will be put into the script context,
+giving you access to spring application context, you can use this file to add support to various frameworks and put you favorite utilities in the
+script context.</p>
+
+<p><strong>Built-in variables before init script</strong></p>
+
+<p><em>_request</em> Just the request</p>
+
+<p><em>_response</em> Just the response</p>
+
+<p><em>_charset</em> Request and response charset, same as <em>RgshFilter.charset</em></p>
+
+<h2>Example</h2>
+
+<p>You can found an example project in <em>remote-gsh-example/</em> directory, the example project is a very very simple PetStore project, you can build it and run the war file
+in any type of servlet container, or you can just run <em>mvn run:jetty</em> to start the built-in jetty
+server and find whats going on, One thing to say is that the project contains several problems,
+which made the application unavailable, but with the power of Remote Groovy Shell and Groovy language,
+you can even fix those problems without restarting your application</p>
+
+<p><em>examples.groovy</em> will show you what you can do with you application using Remote Groovy Shell, it is very simple, just read it!</p>
+
+<p>Use command below to run this script on the server(Assume that you are using the buily-in Jetty), of course you can use the <em>rgsh</em> client :D</p>
+
+<pre><code>curl -X POST "http://localhost/admin/rgsh" -T example.groovy
+</code></pre>
       </section>
       <footer>
         <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
