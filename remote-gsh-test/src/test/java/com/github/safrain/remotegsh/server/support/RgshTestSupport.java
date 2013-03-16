@@ -1,4 +1,4 @@
-package safrain.remotegsh.server.support;
+package com.github.safrain.remotegsh.server.support;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.cookie.CookiePolicy;

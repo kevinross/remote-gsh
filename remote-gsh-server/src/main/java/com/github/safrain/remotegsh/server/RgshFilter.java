@@ -1,4 +1,4 @@
-package safrain.remotegsh.server;
+package com.github.safrain.remotegsh.server;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -283,7 +283,7 @@ public class RgshFilter implements Filter {
     // ==========Shell session management==========
 
     /**
-     * Get shell session by sid,and purge timout sessions
+     * Get shell session by sid,and purge timeout sessions
      */
     private ShellSession getSession(String sid) {
         purgeTimeOutSessions();
@@ -317,7 +317,7 @@ public class RgshFilter implements Filter {
     }
 
     /**
-     * Input stream to string
+     * Input stream to byte array
      */
     public static byte[] toBytes(InputStream inputStream) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();

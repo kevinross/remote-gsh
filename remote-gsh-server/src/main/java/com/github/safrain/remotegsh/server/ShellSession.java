@@ -1,4 +1,4 @@
-package safrain.remotegsh.server;
+package com.github.safrain.remotegsh.server;
 
 import javax.script.ScriptEngine;
 

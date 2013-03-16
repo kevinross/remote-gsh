@@ -49,7 +49,7 @@ For maven projects, add below content into you pom
 
 	<filter>
 		<filter-name>Rgsh</filter-name>
-		<filter-class>safrain.remotegsh.server.RgshFilter</filter-class>
+		<filter-class>com.github.safrain.remotegsh.RgshFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>Rgsh</filter-name>

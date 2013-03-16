@@ -1,4 +1,4 @@
-package safrain.remotegsh.shell;
+package com.github.safrain.remotegsh.shell;
 
 /**
  * Throw if you cant get to the server

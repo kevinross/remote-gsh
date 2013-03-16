@@ -1,4 +1,4 @@
-package safrain.remotegsh.shell;
+package com.github.safrain.remotegsh.shell;
 
 /**
  * Just an http response

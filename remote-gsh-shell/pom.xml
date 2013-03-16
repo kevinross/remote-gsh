@@ -3,11 +3,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>safrain.remotegsh</groupId>
+		<groupId>com.github.safrain</groupId>
 		<artifactId>remote-gsh-parent</artifactId>
 		<version>1.0</version>
 	</parent>
-	<groupId>safrain.remotegsh</groupId>
+	<groupId>com.github.safrain</groupId>
 	<artifactId>remote-gsh-shell</artifactId>
 	<packaging>jar</packaging>
 	<version>${shell.version}</version>
@@ -49,7 +49,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>safrain.remotegsh.shell.Main</mainClass>
+							<mainClass>com.github.safrain.remotegsh.shell.Main</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

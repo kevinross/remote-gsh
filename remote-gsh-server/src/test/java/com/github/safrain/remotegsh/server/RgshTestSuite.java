@@ -1,4 +1,4 @@
-package safrain.remotegsh.server;
+package com.github.safrain.remotegsh.server;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

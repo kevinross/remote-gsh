@@ -1,4 +1,4 @@
-package safrain.remotegsh.shell;
+package com.github.safrain.remotegsh.shell;
 
 import java.io.IOException;
 

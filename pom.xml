@@ -2,11 +2,30 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>safrain.remotegsh</groupId>
+	<groupId>com.github.safrain</groupId>
 	<artifactId>remote-gsh-parent</artifactId>
 	<packaging>pom</packaging>
 	<version>1.0</version>
 	<name>Remote Groovy Shell Parent</name>
+	<description>Light weight debugging/management tool embeded in Java servlet web applications.</description>
+	<developers>
+		<developer>
+			<id>safrain</id>
+			<name>Safrain</name>
+			<email>z.safrain@gmail.com</email>
+		</developer>
+	</developers>
+	<scm>
+		<url>git@github.com:safrain/remote-gsh.git</url>
+		<connection>scm:git:git@github.com:safrain/remote-gsh.git</connection>
+	</scm>
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 	<modules>
 		<module>remote-gsh-shell</module>
 		<module>remote-gsh-server</module>
