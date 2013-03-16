@@ -20,4 +20,12 @@
 		<filter-name>Rgsh</filter-name>
 		<url-pattern>/admin/rgsh</url-pattern>
 	</filter-mapping>
+	<servlet>
+		<servlet-name>Buy</servlet-name>
+		<servlet-class>com.github.safrain.remotegsh.example.BuyServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Buy</servlet-name>
+		<url-pattern>/buy</url-pattern>
+	</servlet-mapping>
 </web-app>

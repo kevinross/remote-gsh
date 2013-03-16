@@ -22,10 +22,6 @@ Through this Remote Groovy Shell, you can do a lot of fantastic things to you ap
 
 ## User Guide
 
-### Some Examples
-
-TODO
-
 ### Embbed rgsh in you project
 
 1.Add following jars into you classpath
@@ -35,7 +31,7 @@ TODO
 
 For maven projects, add below content into you pom
 
-	TODO
+	TODO, im uploading it to maven central
 
 	<dependency>
 		<groupId>org.codehaus.groovy</groupId>
@@ -107,7 +103,33 @@ Just Edit *rgsh* and modify DEFAULT\_SERVER, DEFAULT\_FILE\_CHARSET and DEFAULT\
 
 ### Extending
 
-#### Custiom init script
+#### Customizing the init script
+An *init script* will be executed before script you uploaded(or before your first shell command),
+by default the script is *com/github/safrain/remotegsh/server/init.groovy* but you can customize it using filter init parameter *initScriptPath*
+In the init script, you can put some vairables into the script context, by default, *_context* and *getbean* will be put into the script context,
+giving you access to spring application context, you can use this file to add support to various frameworks and put you favorite utilities in the
+script context.
 
-TODO
+**Built-in variables before init script**
+
+*_request* Just the request
+
+*_response* Just the response
+
+*_charset* Request and response charset, same as *RgshFilter.charset*
+
+## Example
+
+You can found an example project in *remote-gsh-example/* directory, the example project is a very very simple PetStore project, you can build it and run the war file
+in any type of servlet container, or you can just run *mvn run:jetty* to start the built-in jetty
+server and find whats going on, One thing to say is that the project contains several problems,
+which made the application unavailable, but with the power of Remote Groovy Shell and Groovy language,
+you can even fix those problems without restarting your application
+
+*examples.groovy* will show you what you can do with you application using Remote Groovy Shell, it is very simple, just read it!
+
+Use command below to run this script on the server(Assume that you are using the buily-in Jetty), of course you can use the *rgsh* client :D
+
+	curl -X POST "http://localhost/admin/rgsh" -T example.groovy
+
 
