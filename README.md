@@ -11,7 +11,6 @@ Through this Remote Groovy Shell, you can do a lot of fantastic things to you ap
 - I want to call specific method of a bean without add any fxxking jsps
 - I want to mock some behavior conveniently 
 - I want to modify specific property of a bean and see what happens without editing the code and restarting the application
-- I want to hot replace some class
 
 ## Features
 
@@ -110,7 +109,7 @@ In the init script, you can put some vairables into the script context, by defau
 giving you access to spring application context, you can use this file to add support to various frameworks and put you favorite utilities in the
 script context.
 
-**Built-in variables before init script**
+**Built-in variables before init script execution**
 
 *_request* Just the request
 
