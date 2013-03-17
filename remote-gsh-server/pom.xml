@@ -51,7 +51,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${basedir}/target/classes/safrain/remotegsh/server</outputDirectory>
+							<outputDirectory>${basedir}/target/classes/com/github/safrain/remotegsh/server</outputDirectory>
 							<resources>
 								<resource>
 									<directory>../remote-gsh-shell/target</directory>

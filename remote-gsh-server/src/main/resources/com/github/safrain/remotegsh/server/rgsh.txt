@@ -4,12 +4,10 @@
 
 #To Modify default settings,edit these variables 
 DEFAULT_SERVER="{{server}}"
-DEFAULT_FILE_CHARSET="{{charset}}"
-DEFAULT_REQUEST_CHARSET="{{charset}}"
+DEFAULT_CHARSET="{{charset}}"
 
 server=$DEFAULT_SERVER
-file_charset=$DEFAULT_FILE_CHARSET
-request_charset=$DEFAULT_REQUEST_CHARSET
+charset=$DEFAULT_CHARSET
 
 
 usage () {
@@ -20,27 +18,23 @@ usage () {
         echo ""
         echo "Options:"
         echo " -s, --server             Specify server url, '$DEFAULT_SERVER' as default."
-        echo " -f, --file-charset       Specify script file charset, '$DEFAULT_FILE_CHARSET' as default."
-        echo " -r, --request-charset    Specify request charset(make it same as server charset!),  '$DEFAULT_REQUEST_CHARSET' as default."
+        echo " -c, --charset            Specify request charset(make it same as server charset!), '$DEFAULT_REQUEST_CHARSET' as default."
         echo ""
         echo "Examples:"
         echo " - Start remote groovy shell"
         echo "      ./rgsh"
         echo ""
-        echo " - Send 'foo.groovy' to server and evaluate it, file charset is 'utf-8'"
-        echo "      ./rgsh foo.groovy" -f utf-8
-        echo ""
         echo " - Start remote groovy shell at 'http://foobar.com/rgsh', request charset is 'utf-8'"
-        echo "      ./rgsh foo.groovy -s http://foobar.com/rgsh -r utf-8"
+        echo "      ./rgsh foo.groovy -s http://foobar.com/rgsh -c utf-8"
         echo ""
         echo "* To change default server and charset settings, just edit '$0'"
-        echo "and modify DEFAULT_SERVER DEFAULT_FILE_CHARSET and DEFAULT_REQUEST_CHARSET variables."
+        echo "and modify DEFAULT_SERVER and DEFAULT_CHARSET variable."
         echo ""
         exit 1;
 }
 
 #Parse opts
-ARGS=`getopt -o s:f:r:h -l server:,file-charset:,request-charset:,help -n "$0" -- "$@"`
+ARGS=`getopt -o s:c:h -l server:,charset:,help -n "$0" -- "$@"`
 if [ $? -ne 0 ];
 then
         usage;
@@ -59,17 +53,10 @@ while true; do
                         usage;
                         shift;
                 ;;
-                -f|--file-charset)
+                -c|--charset)
                         shift;
                         if [ -n "$1" ]; then
-                                file_charset=$1
-                                shift;
-                        fi
-                ;;
-                -r|--request-charset)
-                        shift;
-                        if [ -n "$1" ]; then
-                                request_charset=$1
+                                charset=$1
                                 shift;
                         fi
                 ;;
@@ -83,10 +70,10 @@ done
 #TODO : add JAVA_CMD detection and error report
 if [ $# = 0 ];then
         #Start shell
-        java -Dserver=$server -Dfile-charset=$file_charset -Drequest-charset=$request_charset -jar remote-gsh-shell-${shell.version}.jar
+        java -Dserver=$server -Dcharset=$charset -jar remote-gsh-shell-${shell.version}.jar
 elif [ $# = 1 ];then
         #Run script
-        java -Dserver=$server -Dfile-charset=$file_charset -Drequest-charset=$request_charset -jar remote-gsh-shell-${shell.version}.jar run $1
+        java -Dserver=$server -Dcharset=$charset -jar remote-gsh-shell-${shell.version}.jar run $1
 else
         usage;
 fi
