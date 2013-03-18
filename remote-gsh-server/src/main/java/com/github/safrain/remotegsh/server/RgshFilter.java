@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class RgshFilter implements Filter {
     private static final Logger log = Logger.getLogger(RgshFilter.class.getName());
-    private static final String RESOURCE_PATH = "safrain/remotegsh/server/";
+    private static final String RESOURCE_PATH = "com/github/safrain/remotegsh/server/";
     private static final String DEFAULT_CHARSET = "utf-8";
     private static final long SESSION_PURGE_INTERVAL = 1000 * 60 * 5L;// 5 min
     private static final String PLACEHOLDER_SERVER = "\\{\\{server\\}\\}";
