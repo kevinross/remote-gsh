@@ -1,4 +1,0 @@
-
-usage: @|bold run|@ <file>
-
-Upload script file to server and run.

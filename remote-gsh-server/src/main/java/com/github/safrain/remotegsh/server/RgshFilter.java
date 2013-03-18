@@ -1,20 +1,13 @@
 package com.github.safrain.remotegsh.server;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -216,20 +209,48 @@ public class RgshFilter implements Filter {
             response.setStatus(410);// Http status GONE
             return;
         }
-        ScriptEngine engine = session.getEngine();
-        PrintWriter writer = response.getWriter();
-        engine.getContext().setWriter(writer);
-        engine.getContext().setErrorWriter(writer);
-        String script = toString(request.getInputStream(), charset);
-        try {
-            Object result = engine.eval(script);
-            response.setStatus(200);
-            response.getWriter().print("@|bold ===>|@ " + String.valueOf(result));
-        } catch (ScriptException e) {
-            log.log(Level.SEVERE, "Error while running shell command:" + script, e);
-            response.setStatus(500);
-            e.getCause().printStackTrace(response.getWriter());
-        }
+		ScriptEngine engine = session.getEngine();
+
+		String action = request.getParameter("action");
+		if (action == null || action.equals("execute")){
+			StringWriter responseWriter = new StringWriter();
+			StringWriter errorWriter = new StringWriter();
+			engine.getContext().setWriter(responseWriter);
+			engine.getContext().setErrorWriter(errorWriter);
+			String script = toString(request.getInputStream(), charset);
+			Properties p = new Properties();
+			try {
+				Object result = engine.eval(script);
+				p.put("result", String.valueOf(result));
+				response.setStatus(200);
+			} catch (ScriptException e) {
+				log.log(Level.SEVERE, "Error while running shell command:" + script, e);
+				response.setStatus(500);
+				e.getCause().printStackTrace(new PrintWriter(errorWriter));
+				p.put("error", errorWriter.getBuffer().toString());
+			}
+			p.put("response", responseWriter.getBuffer().toString());
+			StringWriter sw = new StringWriter();
+			p.store(sw,null);
+			String responseString = sw.getBuffer().toString();
+			String sep = System.getProperty("line.separator");
+			response.getWriter().write(responseString.substring(responseString.indexOf(sep) + sep.length()));
+		} else{
+			Invocable invocable = (Invocable) engine;
+			try {
+				invocable.invokeFunction("shellAction",action);
+			} catch (ScriptException e) {
+				response.setStatus(500);
+				e.printStackTrace(response.getWriter());
+			} catch (NoSuchMethodException e) {
+				response.setStatus(500);
+				response.getWriter().println("Action not supported");
+			} catch (Exception e){
+				response.setStatus(500);
+				e.printStackTrace(response.getWriter());
+			}
+		}
+
     }
 
     /*
@@ -336,4 +357,11 @@ public class RgshFilter implements Filter {
         return new String(toBytes(inputStream), charset);
     }
 
+	public String getCharset() {
+		return charset;
+	}
+
+	public void setCharset(String charset) {
+		this.charset = charset;
+	}
 }

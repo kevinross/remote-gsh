@@ -1,12 +1,9 @@
 package com.github.safrain.remotegsh.shell;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.concurrent.Callable;
 
@@ -51,8 +48,7 @@ public class GshShell {
 	/**
 	 * Request & response charset
 	 */
-	private String fileCharset = DEFAULT_CHARSET;
-	private String requestCharset = DEFAULT_CHARSET;
+	private String charset = DEFAULT_CHARSET;
 
 	public void initTerminal() throws IOException {
 		TerminalFactory.configure(TerminalFactory.Type.AUTO);
@@ -78,11 +74,10 @@ public class GshShell {
 	public void start() throws IOException {
 		println(getResourceString("welcome.txt"));
 		println("@|yellow Server|@: %s", server);
-		println("@|yellow File charset|@: %s", fileCharset);
-		println("@|yellow Request charset|@: %s", requestCharset);
+		println("@|yellow Request charset|@: %s", charset);
 		cmdHelp(new String[] {});
 		ensureConnection();
-		String input = null;
+		String input;
 		while (true) {
 			input = consoleReader.readLine(AnsiRenderer.render(String.format("@|bold rgsh@%s>|@ ", server))).trim();
 			if (input.isEmpty()) {
@@ -102,10 +97,6 @@ public class GshShell {
 				case EXIT:
 					cmdExit();
 					break;
-				case RUN:
-					ensureConnection();
-					cmdRun(parseArgs(input));
-					break;
 				}
 			} else {
 				ensureConnection();
@@ -123,7 +114,7 @@ public class GshShell {
 	}
 
 	public boolean connect() {
-		ServerResponse response = null;
+		ServerResponse response;
 		try {
 			response = httpGet(server + "?r=shell");
 		} catch (ConnectionException e) {
@@ -160,7 +151,7 @@ public class GshShell {
 			tokens.add(w);
 		}
 		if (tokens.size() > 1) {
-			return (String[]) tokens.subList(1, tokens.size()).toArray(new String[0]);
+			return tokens.subList(1, tokens.size()).toArray(new String[0]);
 		} else {
 			return new String[0];
 		}
@@ -173,49 +164,39 @@ public class GshShell {
 	public void shellExecute(String input) {
 		ServerResponse response;
 		try {
-			response = post(server + "?sid=" + sid, input);
+			response = httpPost(server + "?sid=" + sid, input);
 		} catch (ConnectionException e) {
 			reportConnectionError(e);
 			return;
 		}
-		dealExecuteResponse(response);
-	}
-
-	/**
-	 * Upload a groovy script file and execute on server
-	 */
-	public void cmdRun(String[] args) {
-		if (args.length != 1) {
-			reportError("Must specify script file name.");
-			return;
+		Properties p = new Properties();
+		if (response.responseString != null) {
+			try {
+				p.load(new StringReader(response.responseString));
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 		}
-		String filename = args[0];
-		try {
-			FileInputStream fis = new FileInputStream(filename);
-			String content = IOUtils.toString(fis, fileCharset);
-			ServerResponse response = post(server, content);
-			dealExecuteResponse(response);
-		} catch (FileNotFoundException e) {
-			println("File '%s' not found.", filename);
-		} catch (IOException e) {
-			reportError(e);
-		} catch (ConnectionException e) {
-			sid = null;
-			reportConnectionError(e);
-		}
-	}
 
-	/**
-	 * Response handler for {@link #shellExecute(String)} and
-	 * {@link #cmdRun(String[])}
-	 */
-	private void dealExecuteResponse(ServerResponse response) {
+		String result = p.getProperty("result");
+		String error = p.getProperty("error");
+		String r = p.getProperty("response");
+
+
 		if (response.statusCode == 200) {
-			println(response.responseString);
+			println(String.format("@|bold ===>%s|@",result));
+			if (r!=null){
+				println(r);
+			}
 		} else if (response.statusCode == 500) {
-			reportError("Server exception while executing script");
-			println("@|red Stack Trace:|@");
-			println(response.responseString);
+			if (r!=null){
+				println(r);
+			}
+			reportError("Server exception(@|red %s|@).",response.statusCode);
+			if(error!=null){
+				println("@|red Stack Trace:|@");
+				println(error);
+			}
 		} else if (response.statusCode == 410) {
 			sid = null;
 			reportError("Shell session timeout(@|red %s|@).", response.statusCode);
@@ -240,11 +221,6 @@ public class GshShell {
 				case EXIT:
 					println(getResourceString("help/exit.txt"));
 					break;
-				case RUN:
-					println(getResourceString("help/run.txt"));
-					break;
-				default:
-					break;
 				}
 			}
 		} else {
@@ -263,7 +239,7 @@ public class GshShell {
 	// ==========Resource Utilities==========
 	private String getResourceString(String name) {
 		try {
-			InputStream is = getClass().getClassLoader().getResourceAsStream("safrain/remotegsh/shell/" + name);
+			InputStream is = getClass().getClassLoader().getResourceAsStream("com/github/safrain/remotegsh/shell/" + name);
 			if (is == null) {
 				return null;
 			}
@@ -281,7 +257,7 @@ public class GshShell {
 		ServerResponse r = new ServerResponse();
 		try {
 			int statusCode = client.executeMethod(get);
-			String responseString = new String(get.getResponseBody(), requestCharset);
+			String responseString = new String(get.getResponseBody(), charset);
 			r.statusCode = statusCode;
 			r.responseString = responseString;
 		} catch (Exception e) {
@@ -290,14 +266,14 @@ public class GshShell {
 		return r;
 	}
 
-	public ServerResponse post(String uri, String content) throws ConnectionException {
+	public ServerResponse httpPost(String uri, String content) throws ConnectionException {
 		ServerResponse r = new ServerResponse();
 		try {
 			PostMethod post = new PostMethod(uri);
 			post.getParams().setCookiePolicy(CookiePolicy.RFC_2109);
-			post.setRequestEntity(new StringRequestEntity(content, "text", requestCharset));
+			post.setRequestEntity(new StringRequestEntity(content, "text", charset));
 			int statusCode = client.executeMethod(post);
-			String responseString = new String(post.getResponseBody(), requestCharset);
+			String responseString = new String(post.getResponseBody(), charset);
 			r.statusCode = statusCode;
 			r.responseString = responseString;
 		} catch (Exception e) {
@@ -316,11 +292,6 @@ public class GshShell {
 		out.println(String.format(format, args));
 	}
 
-	private void reportError(Exception e) {
-		reportError("Uncaught exception:");
-		e.printStackTrace(out);
-	}
-
 	private void reportError(String format, Object... args) {
 		println("@|red ERROR:|@ " + format, args);
 	}
@@ -334,20 +305,11 @@ public class GshShell {
 		this.server = server;
 	}
 
-	public String getFileCharset() {
-		return fileCharset;
+	public String getCharset() {
+		return charset;
 	}
 
-	public void setFileCharset(String fileCharset) {
-		this.fileCharset = fileCharset;
+	public void setCharset(String charset) {
+		this.charset = charset;
 	}
-
-	public String getRequestCharset() {
-		return requestCharset;
-	}
-
-	public void setRequestCharset(String requestCharset) {
-		this.requestCharset = requestCharset;
-	}
-
 }

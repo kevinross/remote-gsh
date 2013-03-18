@@ -10,8 +10,7 @@ import java.util.regex.Pattern;
  */
 public enum GshCommand {
 	HELP("help|\\?"), //
-	EXIT("quit|exit"), //
-	RUN("run"); //
+	EXIT("quit|exit");
 
 	private Pattern pattern;
 
