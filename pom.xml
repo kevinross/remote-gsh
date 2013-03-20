@@ -37,6 +37,7 @@
 		<shell.version>0.1-SNAPSHOT</shell.version>
         <test-server.version>0.1-SNAPSHOT</test-server.version>
 		<example.version>0.1-SNAPSHOT</example.version>
+		<groovy.version>1.8.9</groovy.version>
 	</properties>
 	<build>
 		<resources>
