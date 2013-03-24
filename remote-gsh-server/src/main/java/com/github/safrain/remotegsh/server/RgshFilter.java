@@ -1,5 +1,8 @@
 package com.github.safrain.remotegsh.server;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.*;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.*;
@@ -212,29 +215,31 @@ public class RgshFilter implements Filter {
 		ScriptEngine engine = session.getEngine();
 
 		String action = request.getParameter("action");
-		if (action == null || action.equals("execute")){
+		if (action == null){
 			StringWriter responseWriter = new StringWriter();
-			StringWriter errorWriter = new StringWriter();
 			engine.getContext().setWriter(responseWriter);
-			engine.getContext().setErrorWriter(errorWriter);
+			engine.getContext().setErrorWriter(response.getWriter());
 			String script = toString(request.getInputStream(), charset);
-			Properties p = new Properties();
+			JSONObject json = new JSONObject();
 			try {
-				Object result = engine.eval(script);
-				p.put("result", String.valueOf(result));
-				response.setStatus(200);
-			} catch (ScriptException e) {
+				try {
+					Object result = engine.eval(script);
+					json.put("result", String.valueOf(result));
+					response.setStatus(200);
+					json.put("response", responseWriter.getBuffer().toString());
+				} catch (ScriptException e) {
+					log.log(Level.SEVERE, "Error while running shell command:" + script, e);
+					response.setStatus(500);
+					e.printStackTrace();
+					return;
+				}
+			}catch (JSONException e){
 				log.log(Level.SEVERE, "Error while running shell command:" + script, e);
 				response.setStatus(500);
-				e.getCause().printStackTrace(new PrintWriter(errorWriter));
-				p.put("error", errorWriter.getBuffer().toString());
+				e.printStackTrace();
+				return;
 			}
-			p.put("response", responseWriter.getBuffer().toString());
-			StringWriter sw = new StringWriter();
-			p.store(sw,null);
-			String responseString = sw.getBuffer().toString();
-			String sep = System.getProperty("line.separator");
-			response.getWriter().write(responseString.substring(responseString.indexOf(sep) + sep.length()));
+			response.getWriter().write(json.toString());
 		} else{
 			Invocable invocable = (Invocable) engine;
 			try {

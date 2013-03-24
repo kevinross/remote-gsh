@@ -75,20 +75,22 @@ getResource = {
 COMMANDS = []
 COMMANDS = [
         /help|\?/: [
-                func: { args ->
-                    if (args.length == 1) {
-                        def c = COMMANDS.find { k, v -> args[0] ==~ k }?.value
+                func: {
+                    if (it.size() == 1) {
+                        def c = COMMANDS.find { k, v -> it[0] ==~ k }?.value
                         if (c != null) {
-                            out.println c.text
+                            out.println getResource(c.text)
                         } else {
                             out.println getResource('help.txt')
                         }
+                    } else {
+                        out.println getResource('help.txt')
                     }
                 },
                 text: 'help/help.txt'
         ],
         /exit|quit/: [
-                func: { args ->
+                func: {
                     println("Bye~")
                     System.exit(0)
                 },
@@ -184,34 +186,29 @@ while (true) {
         ensureConnection()
         tryWithConnectionException {
             def response = httpPost("${server}?sid=${sid}", input)
-            def r
-            JsonSlurper j = new JsonSlurper()
-            if (response.responseString) {
-                r = j.parseText(response.responseString)
-            } else {
-                r = [:]
-            }
-
-            if (response.statusCode == 200 || response.statusCode == 500) {
-                out.println "@|bold ===>${ r['result']}|@"
-                if (r['result']) {
-                    out.println r['result']
-                }
-            }
-
-            if (response.statusCode == 500) {
-                out.println "@|red ERROR:|@ Server exception(@|red ${response.statusCode}|@)."
-                if (r['error'] != null) {
-                    out.println "@|red Stack Trace:|@"
-                    out.println r['error']
-                }
-            } else if (response.statusCode == 410) {
-                sid = null
-                out.println "@|red ERROR:|@ Shell session timeout(@|red \${response.statusCode|@)."
-            } else {
-                sid = null
-                out.println "@|red ERROR:|@ Unexpected server error(@|red \${response.statusCode|@)."
-                out.println response.responseString
+            switch (response.statusCode) {
+                case 200:
+                    def r
+                    JsonSlurper j = new JsonSlurper()
+                    if (response.responseString) {
+                        r = j.parseText(response.responseString)
+                    } else {
+                        r = [:]
+                    }
+                    out.println "@|bold ===>${ r['result']}|@"
+                    if (r['response']) {
+                        out.println r['response']
+                    }
+                    break;
+                case 410:
+                    sid = null
+                    out.println "@|red ERROR:|@ Shell session timeout(@|red ${response.statusCode}|@)."
+                    break;
+                default:
+                    sid = null
+                    out.println "@|red ERROR:|@ Server error(@|red ${response.statusCode}|@)."
+                    out.println response.responseString
+                    break;
             }
         }
 

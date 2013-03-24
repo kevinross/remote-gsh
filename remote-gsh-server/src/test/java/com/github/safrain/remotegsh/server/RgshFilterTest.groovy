@@ -116,8 +116,7 @@ public class RgshFilterTest {
         replay(request)
         replay(response)
         filter.doFilter(request, response, null)
-        String sep = System.getProperty("line.separator");
-        assertEquals("result=null${sep}response=got it${sep}".toString(), getResponseString())
+        assertEquals('{"response":"got it","result":"null"}', getResponseString())
         assertEquals(session, filter.shellSessions[sid])
     }
 }
