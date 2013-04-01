@@ -62,10 +62,9 @@ try {
 }
 
 //Init auto complete
-StringsCompleter allCommands = new StringsCompleter("help", "quit", "exit", "run")
+StringsCompleter allCommands = new StringsCompleter("help", "quit", "exit")
 consoleReader.addCompleter(new ArgumentCompleter(new StringsCompleter("help"), allCommands))
 consoleReader.addCompleter(allCommands)
-consoleReader.addCompleter(new ArgumentCompleter(new StringsCompleter("run"), new FileNameCompleter()))
 
 getResource = {
     getClass().getClassLoader().getResourceAsStream("com/github/safrain/remotegsh/shell/${it}").getText('utf-8')
@@ -205,7 +204,6 @@ while (true) {
                     out.println "@|red ERROR:|@ Shell session timeout(@|red ${response.statusCode}|@)."
                     break;
                 default:
-                    sid = null
                     out.println "@|red ERROR:|@ Server error(@|red ${response.statusCode}|@)."
                     out.println response.responseString
                     break;
@@ -214,3 +212,4 @@ while (true) {
 
     }
 }
+1

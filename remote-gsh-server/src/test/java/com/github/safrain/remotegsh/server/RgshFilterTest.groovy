@@ -8,6 +8,7 @@ import javax.servlet.FilterConfig
 import javax.servlet.ServletInputStream
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
+import javax.servlet.http.HttpSession
 
 import static org.easymock.EasyMock.*
 import static org.junit.Assert.assertEquals
@@ -36,7 +37,7 @@ public class RgshFilterTest {
     def HOST_URL = 'http://localhost/admin/rgsh'
 
     def mockRequest(String method, Map param, InputStream input = null) {
-        HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+        HttpServletRequest request = createNiceMock(HttpServletRequest.class)
         expect(request.getMethod()).andReturn(method).anyTimes()
         Capture<String> paramCapture = new Capture<String>()
         String x = capture(paramCapture)

@@ -27,8 +27,11 @@ usage () {
         echo " - Start remote groovy shell at 'http://foobar.com/rgsh', request charset is 'utf-8'"
         echo "      ./rgsh foo.groovy -s http://foobar.com/rgsh -c utf-8"
         echo ""
-        echo "* To change default server and charset settings, just edit '$0'"
-        echo "and modify DEFAULT_SERVER and DEFAULT_CHARSET variable."
+        echo " - Upload script file and run"
+        echo "      ./rgsh foobar.groovy"
+        echo ""
+        echo "* To change default server and charset settings,"
+        echo "  just edit '$0'and modify DEFAULT_SERVER and DEFAULT_CHARSET variable."
         echo ""
         exit 1;
 }
@@ -67,13 +70,16 @@ while true; do
         esac
 done
 
-#TODO : add JAVA_CMD detection and error report
 if [ $# = 0 ];then
         #Start shell
-        java -Dserver=$server -Dcharset=$charset -jar remote-gsh-shell-${shell.version}.jar
+        if [ -z $JAVA_HOME ];then
+        	echo "JAVA_HOME not set, please set JAVA_HOME."
+        else
+        	${JAVA_HOME}/bin/java -Dserver=$server -Dcharset=$charset -jar remote-gsh-shell-${shell.version}.jar
+        fi
 elif [ $# = 1 ];then
         #Run script
-        java -Dserver=$server -Dcharset=$charset -jar remote-gsh-shell-${shell.version}.jar run $1
+        curl -T $1 -X POST "$server" -s -S
 else
         usage;
 fi

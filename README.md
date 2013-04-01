@@ -19,6 +19,10 @@ Through this Remote Groovy Shell, you can do a lot of fantastic things to you ap
 - Bash like client, no manual installation required, just one command to get everything done
 - Easy to extend to support various web application frameworks
 
+## TODOs
+
+- Shell command line completion
+
 ## User Guide
 
 ### Embbed rgsh in you project
@@ -74,7 +78,7 @@ Then you can follow the instructions shown on the screen.
 
 	curl -s http://localhost/admin/rgsh?r=install | bash
 
-Two file will be downloaded to your current folder, an executable jar file *rgsh.jar* and a bash script  *rgsh*.
+Two file will be downloaded to your current folder, an executable jar file and a bash script  *rgsh*.
 
 Your server host and RgshFilter charset setting will be write into *rgsh* as its default settings.
 
@@ -86,26 +90,24 @@ Then feel free to use as a common groovy shell.
 
 Use -s switch to specify server host url.
 
-Use -r switch to specify request charset.
+Use -c switch to specify request charset.
 
 #### Upload script and run
 
-	./rgsh foobar.groovy	
+You can upload a local script file and execute it on server.
 
-Use -f switch to specify script file encoding
-
-Use -r switch to specify request charset.
+	./rgsh foobar.groovy
 
 #### Default Settings
 
-Just Edit *rgsh* and modify DEFAULT\_SERVER, DEFAULT\_FILE\_CHARSET and DEFAULT\_REQUEST\_CHARSET variable
+Just Edit *rgsh* and modify DEFAULT\_SERVER, DEFAULT\_CHARSET variable
 
 ### Extending
 
 #### Customizing the init script
 An *init script* will be executed before script you uploaded(or before your first shell command),
 by default the script is *com/github/safrain/remotegsh/server/init.groovy* but you can customize it using filter init parameter *initScriptPath*
-In the init script, you can put some vairables into the script context, by default, *_context* and *getbean* will be put into the script context,
+In the init script, you can put some vairables into the script context, by default, spring support will be put into the script context,
 giving you access to spring application context, you can use this file to add support to various frameworks and put you favorite utilities in the
 script context.
 
@@ -117,9 +119,13 @@ script context.
 
 *_charset* Request and response charset, same as *RgshFilter.charset*
 
+**Spring support**
+
+TODO
+
 ## Example
 
-You can found an example project in *remote-gsh-example/* directory, the example project is a very very simple PetStore project, you can build it and run the war file
+You can find an example project in *remote-gsh-example/* directory, the example project is a very very simple PetStore project, you can build it and run the war file
 in any type of servlet container, or you can just run *mvn run:jetty* to start the built-in jetty
 server and find whats going on, One thing to say is that the project contains several problems,
 which made the application unavailable, but with the power of Remote Groovy Shell and Groovy language,
@@ -127,8 +133,12 @@ you can even fix those problems without restarting your application
 
 *examples.groovy* will show you what you can do with you application using Remote Groovy Shell, it is very simple, just read it!
 
-Use command below to run this script on the server(Assume that you are using the buily-in Jetty), of course you can use the *rgsh* client :D
+Use command below to run this script on the server(Assume that you are using the buily-in Jetty)
 
 	curl -X POST "http://localhost/admin/rgsh" -T example.groovy
+
+Of course you can use the *rgsh* client :D
+
+	./rgsh example.groovy
 
 
