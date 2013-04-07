@@ -21,7 +21,7 @@
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy</artifactId>
-			<version>1.8.9</version>
+			<version>${groovy.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.fusesource.jansi</groupId>

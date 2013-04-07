@@ -3,8 +3,13 @@ package com.github.safrain.remotegsh.server
 import org.easymock.Capture
 import org.easymock.IAnswer
 import org.junit.Test
+import org.springframework.context.ApplicationContext
+import org.springframework.context.support.ClassPathXmlApplicationContext
+import org.springframework.web.context.WebApplicationContext
+import org.springframework.web.context.support.XmlWebApplicationContext
 
 import javax.servlet.FilterConfig
+import javax.servlet.ServletContext
 import javax.servlet.ServletInputStream
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -36,8 +41,30 @@ public class RgshFilterTest {
 
     def HOST_URL = 'http://localhost/admin/rgsh'
 
+    class MockWebApplicationContext extends ClassPathXmlApplicationContext implements WebApplicationContext {
+        def servletContext;
+
+        MockWebApplicationContext(String configLocation) {
+            super(configLocation)
+        }
+
+        @Override
+        ServletContext getServletContext() {
+            return servletContext
+        }
+    }
+
     def mockRequest(String method, Map param, InputStream input = null) {
+        MockWebApplicationContext applicationContext = new MockWebApplicationContext('classpath:com/github/safrain/remotegsh/server/testApplicationContext.xml')
+        ServletContext servletContext = createNiceMock(ServletContext.class)
+        expect(servletContext.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE)).andReturn(applicationContext)
+        HttpSession session = createNiceMock(HttpSession.class)
+        expect(session.getServletContext()).andReturn(servletContext)
+        replay(servletContext, session)
+        applicationContext.servletContext = servletContext
+
         HttpServletRequest request = createNiceMock(HttpServletRequest.class)
+        expect(request.getSession()).andReturn(session)
         expect(request.getMethod()).andReturn(method).anyTimes()
         Capture<String> paramCapture = new Capture<String>()
         String x = capture(paramCapture)
@@ -119,6 +146,19 @@ public class RgshFilterTest {
         filter.doFilter(request, response, null)
         assertEquals('{"response":"got it","result":"null"}', getResponseString())
         assertEquals(session, filter.shellSessions[sid])
+    }
+
+    @Test
+    void testSpringExtenstion() {
+        def request = mockRequest('POST', [:], new ByteArrayInputStream('print beans.testBean.getClass().name'.getBytes(RgshFilter.DEFAULT_CHARSET)))
+        def response = mockResponse()
+        response.setStatus(200)
+        expectLastCall()
+        replay(request)
+        replay(response)
+        def filter = createFilter([:])
+        filter.doFilter(request, response, null)
+        assertEquals('java.util.HashMap', getResponseString())
     }
 }
 class DelegateServletInputStream extends ServletInputStream {
