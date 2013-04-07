@@ -4,7 +4,7 @@ import javax.script.ScriptEngine;
 
 /**
  * A shell session
- * 
+ *
  * @author safrain
  */
 public class ShellSession {

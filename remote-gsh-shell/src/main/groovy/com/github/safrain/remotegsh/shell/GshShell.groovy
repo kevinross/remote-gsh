@@ -4,7 +4,6 @@ import groovy.json.JsonSlurper
 import jline.TerminalFactory
 import jline.console.ConsoleReader
 import jline.console.completer.ArgumentCompleter
-import jline.console.completer.FileNameCompleter
 import jline.console.completer.StringsCompleter
 import org.apache.commons.httpclient.HttpClient
 import org.apache.commons.httpclient.cookie.CookiePolicy

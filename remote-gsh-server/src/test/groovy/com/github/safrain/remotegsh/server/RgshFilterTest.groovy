@@ -3,10 +3,8 @@ package com.github.safrain.remotegsh.server
 import org.easymock.Capture
 import org.easymock.IAnswer
 import org.junit.Test
-import org.springframework.context.ApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext
 import org.springframework.web.context.WebApplicationContext
-import org.springframework.web.context.support.XmlWebApplicationContext
 
 import javax.servlet.FilterConfig
 import javax.servlet.ServletContext

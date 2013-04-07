@@ -1,6 +1,6 @@
+<%@ page import="com.github.safrain.remotegsh.example.Pet" %>
 <%@ page import="com.github.safrain.remotegsh.example.PetStore" %>
 <%@ page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
-<%@ page import="com.github.safrain.remotegsh.example.Pet" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>

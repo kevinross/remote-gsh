@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.safrain</groupId>
 	<artifactId>remote-gsh-parent</artifactId>
@@ -21,7 +21,7 @@
 	</scm>
 	<licenses>
 		<license>
-			<name>Apache License, Version 2.0</name>
+			<name>WTFPL</name>
 			<url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
 			<distribution>repo</distribution>
 		</license>
@@ -29,13 +29,13 @@
 	<modules>
 		<module>remote-gsh-shell</module>
 		<module>remote-gsh-server</module>
-        <module>remote-gsh-test</module>
+		<module>remote-gsh-test</module>
 		<module>remote-gsh-example</module>
 	</modules>
 	<properties>
 		<server.version>0.1-SNAPSHOT</server.version>
 		<shell.version>0.1-SNAPSHOT</shell.version>
-        <test-server.version>0.1-SNAPSHOT</test-server.version>
+		<test-server.version>0.1-SNAPSHOT</test-server.version>
 		<example.version>0.1-SNAPSHOT</example.version>
 		<groovy.version>1.8.9</groovy.version>
 		<spring.version>2.5.6.SEC03</spring.version>
@@ -70,33 +70,33 @@
 						<goals>
 							<goal>jar</goal>
 						</goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.groovy.maven</groupId>
-                <artifactId>gmaven-plugin</artifactId>
-                <version>1.0-rc-3</version>
-                <extensions>true</extensions>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <fileset>
-                                    <directory>${pom.basedir}/src/test/java</directory>
-                                    <includes>
-                                        <include>**/*.groovy</include>
-                                    </includes>
-                                </fileset>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.groovy.maven</groupId>
+				<artifactId>gmaven-plugin</artifactId>
+				<version>1.0-rc-3</version>
+				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<fileset>
+									<directory>${pom.basedir}/src/test/java</directory>
+									<includes>
+										<include>**/*.groovy</include>
+									</includes>
+								</fileset>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
 
