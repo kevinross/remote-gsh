@@ -13,32 +13,48 @@
  */
 
 println "You can access spring application context using built-in variable '_context'"
-println "\t_context = ${_context}"
-println "\t_context.getClass() = ${_context.class}"
 
-println ""
+println "println _context"
+println _context
 
-println "Then you can access your bean"
+println "Then you can access your beans"
+println "def petStore = _context.getBean('petStore')"
 def petStore = _context.getBean('petStore')
 
-println "\tpetStore = ${petStore}"
-println "\tpetStore.getClass() = ${petStore.class}"
+println "println petStore"
+println petStore
 
 println ""
 
-println "Modify bean properties"
+println "You can access beans using built-in variable 'beans' for convenience"
+println "println beans.petStore == petStore"
+println beans.petStore == petStore
+
+println ""
+
+println "You can modify bean properties"
+println "petStore.open = false"
 petStore.open = false
-println "\tpetStore.open = ${petStore.open}"
-
-println ""
+println "println petStore.open"
+println petStore.open
 
 println "And call methods"
+println "petStore.open()"
 petStore.open()
-println "\tpetStore.open = ${petStore.open}"
+println "println petStore.open"
+println petStore.open
 
 println ""
 
 println "You can even create a class dynamically to override existing behaviors"
+println """public class FixedDelivery extends com.github.safrain.remotegsh.example.Delivery {
+    @Override
+    public void deliver(com.github.safrain.remotegsh.example.Pet pet) {
+        //Fix the BUG and do some delivery work :D
+        //throw new HereIsABugException();
+    }
+}
+petStore.delivery = new FixedDelivery()"""
 public class FixedDelivery extends com.github.safrain.remotegsh.example.Delivery {
     @Override
     public void deliver(com.github.safrain.remotegsh.example.Pet pet) {
