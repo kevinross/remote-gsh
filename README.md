@@ -15,7 +15,7 @@ Through this Remote Groovy Shell, you can do a lot of fantastic things to you ap
 ## Features
 
 - Execute groovy command or local script file at remote server 
-- Lightweighted, no additional dependencies(except groovy runtime), easy to embed into your project
+- Lightweight, no additional dependencies(except groovy runtime), easy to embed into your project
 - Bash like client, no manual installation required, just one command to get everything done
 - Easy to extend to support various web application frameworks
 
@@ -59,9 +59,9 @@ For maven projects, add below content into you pom
 
 *charset* Request and Response character encoding, 'utf-8' as default.
 
-*initScriptPath* Init script classpath, 'safrain/remotegsh/server/init.groovy' as default.
+*scriptExtensions* Script extension path, you can set multiple classpath here, separated by comma, 'com/github/safrain/remotegsh/server/extension/spring.groovy' as default.
 
-*initScriptCharset* Init script content charset, 'utf-8' as default.
+*scriptExtensionCharset*  Charset of script extensions, 'utf-8' as default.
 
 
 ### Using shell client
@@ -104,14 +104,14 @@ Just Edit *rgsh* and modify DEFAULT\_SERVER, DEFAULT\_CHARSET variable
 
 ### Extending
 
-#### Customizing the init script
-An *init script* will be executed before script you uploaded(or before your first shell command),
-by default the script is *com/github/safrain/remotegsh/server/init.groovy* but you can customize it using filter init parameter *initScriptPath*
-In the init script, you can put some vairables into the script context, by default, spring support will be put into the script context,
-giving you access to spring application context, you can use this file to add support to various frameworks and put you favorite utilities in the
-script context.
+#### Script extension
+*Script Extensions* will be executed before script you uploaded(or before your first shell command),
+by default the script is *com/github/safrain/remotegsh/server/extension/spring.groovy*, adding support to Spring framework
+and you can customize it using filter init parameter *scriptExtensions*
+In the extension script, you can put some variables or function into the script context to add support to various frameworks
+Or you can simply put some of your favorite utilities in it.
 
-**Built-in variables before init script execution**
+**Built-in variables**
 
 *_request* Just the request
 
@@ -119,9 +119,11 @@ script context.
 
 *_charset* Request and response charset, same as *RgshFilter.charset*
 
-**Spring support**
+**Spring support**(com/github/safrain/remotegsh/server/extension/spring.groovy)
 
-TODO
+*_context* Just the spring ApplicationContext in your ServletContext
+
+*beans* Shortcut to access your beans, use 'beans.beanName' to access your bean
 
 ## Example
 

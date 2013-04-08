@@ -26,16 +26,14 @@
 	</scm>
 	<licenses>
 		<license>
-			<name>WTFPL</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+			<name>WTFPL v2</name>
+			<url>http://www.wtfpl.net</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
 	<modules>
 		<module>remote-gsh-shell</module>
 		<module>remote-gsh-server</module>
-		<module>remote-gsh-test</module>
-		<module>remote-gsh-example</module>
 	</modules>
 	<properties>
 		<server.version>0.1-SNAPSHOT</server.version>
@@ -113,20 +111,36 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>sign-artifacts</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
+    <profiles>
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.1</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
 
