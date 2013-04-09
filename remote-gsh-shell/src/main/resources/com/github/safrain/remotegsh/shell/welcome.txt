@@ -10,4 +10,4 @@
 @|yellow    \____|_|  \___/ \___/ \_/  \__, | |____/|_| |_|\___|_|_||@
 @|yellow                               |___/                        |@
 
-@|bold Remote Groovy Shell v${shell.version}|@ by @|bold Safrain|@<@|blue z.safrain@gmail.com|@>
+@|bold Remote Groovy Shell v${project.version}|@ by @|bold Safrain|@<@|blue z.safrain@gmail.com|@>

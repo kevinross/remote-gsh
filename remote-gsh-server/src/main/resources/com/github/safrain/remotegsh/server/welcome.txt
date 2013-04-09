@@ -10,7 +10,7 @@
     \____|_|  \___/ \___/ \_/  \__, | |____/|_| |_|\___|_|_|
                                |___/                       
 
- Remote Groovy Shell Server v${server.version}
+ Remote Groovy Shell Server v${project.version}
 
  Usage:
  

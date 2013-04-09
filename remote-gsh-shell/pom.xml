@@ -7,11 +7,9 @@
 		<artifactId>remote-gsh-parent</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-	<groupId>com.github.safrain</groupId>
 	<artifactId>remote-gsh-shell</artifactId>
-	<packaging>jar</packaging>
-	<version>${shell.version}</version>
 	<name>Remote Groovy Shell Clientside</name>
+    <packaging>jar</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>jline</groupId>
@@ -21,7 +19,6 @@
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy</artifactId>
-			<version>${groovy.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.fusesource.jansi</groupId>
@@ -44,7 +41,8 @@
 				<artifactId>gmaven-plugin</artifactId>
 				<configuration>
 					<providerSelection>1.8</providerSelection>
-				</configuration>
+                    <source />
+                </configuration>
 				<executions>
 					<execution>
 						<goals>

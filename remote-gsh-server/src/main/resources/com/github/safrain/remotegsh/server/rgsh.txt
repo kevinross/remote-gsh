@@ -12,7 +12,7 @@ charset=$DEFAULT_CHARSET
 
 usage () {
         echo ""
-        echo "Remote Groovy Shell Client v${shell.version}"
+        echo "Remote Groovy Shell Client v${project.version}"
         echo ""
         echo "Usage: $0 [FILE] [OPTIONS]"
         echo ""
@@ -75,7 +75,7 @@ if [ $# = 0 ];then
         if [ -z $JAVA_HOME ];then
         	echo "JAVA_HOME not set, please set JAVA_HOME."
         else
-        	${JAVA_HOME}/bin/java -Dserver=$server -Dcharset=$charset -jar remote-gsh-shell-${shell.version}.jar
+        	${JAVA_HOME}/bin/java -Dserver=$server -Dcharset=$charset -jar remote-gsh-shell-${project.version}.jar
         fi
 elif [ $# = 1 ];then
         #Run script
