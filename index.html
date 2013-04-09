@@ -45,14 +45,17 @@
 <li>I want to call specific method of a bean without add any fxxking jsps</li>
 <li>I want to mock some behavior conveniently </li>
 <li>I want to modify specific property of a bean and see what happens without editing the code and restarting the application</li>
-<li>I want to hot replace some class</li>
 </ul><h2>Features</h2>
 
 <ul>
 <li>Execute groovy command or local script file at remote server </li>
-<li>Lightweighted, no additional dependencies(except groovy runtime), easy to embed into your project</li>
+<li>Lightweight, no additional dependencies(except groovy runtime), easy to embed into your project</li>
 <li>Bash like client, no manual installation required, just one command to get everything done</li>
 <li>Easy to extend to support various web application frameworks</li>
+</ul><h2>TODOs</h2>
+
+<ul>
+<li>Shell command line completion</li>
 </ul><h2>User Guide</h2>
 
 <h3>Embbed rgsh in you project</h3>
@@ -93,9 +96,9 @@
 
 <p><em>charset</em> Request and Response character encoding, 'utf-8' as default.</p>
 
-<p><em>initScriptPath</em> Init script classpath, 'safrain/remotegsh/server/init.groovy' as default.</p>
+<p><em>scriptExtensions</em> Script extension path, you can set multiple classpath here, separated by comma, 'com/github/safrain/remotegsh/server/extension/spring.groovy' as default.</p>
 
-<p><em>initScriptCharset</em> Init script content charset, 'utf-8' as default.</p>
+<p><em>scriptExtensionCharset</em>  Charset of script extensions, 'utf-8' as default.</p>
 
 <h3>Using shell client</h3>
 
@@ -113,7 +116,7 @@
 <pre><code>curl -s http://localhost/admin/rgsh?r=install | bash
 </code></pre>
 
-<p>Two file will be downloaded to your current folder, an executable jar file <em>rgsh.jar</em> and a bash script  <em>rgsh</em>.</p>
+<p>Two file will be downloaded to your current folder, an executable jar file and a bash script  <em>rgsh</em>.</p>
 
 <p>Your server host and RgshFilter charset setting will be write into <em>rgsh</em> as its default settings.</p>
 
@@ -126,32 +129,30 @@
 
 <p>Use -s switch to specify server host url.</p>
 
-<p>Use -r switch to specify request charset.</p>
+<p>Use -c switch to specify request charset.</p>
 
 <h4>Upload script and run</h4>
 
-<pre><code>./rgsh foobar.groovy    
+<p>You can upload a local script file and execute it on server.</p>
+
+<pre><code>./rgsh foobar.groovy
 </code></pre>
-
-<p>Use -f switch to specify script file encoding</p>
-
-<p>Use -r switch to specify request charset.</p>
 
 <h4>Default Settings</h4>
 
-<p>Just Edit <em>rgsh</em> and modify DEFAULT_SERVER, DEFAULT_FILE_CHARSET and DEFAULT_REQUEST_CHARSET variable</p>
+<p>Just Edit <em>rgsh</em> and modify DEFAULT_SERVER, DEFAULT_CHARSET variable</p>
 
 <h3>Extending</h3>
 
-<h4>Customizing the init script</h4>
+<h4>Script extension</h4>
 
-<p>An <em>init script</em> will be executed before script you uploaded(or before your first shell command),
-by default the script is <em>com/github/safrain/remotegsh/server/init.groovy</em> but you can customize it using filter init parameter <em>initScriptPath</em>
-In the init script, you can put some vairables into the script context, by default, <em>_context</em> and <em>getbean</em> will be put into the script context,
-giving you access to spring application context, you can use this file to add support to various frameworks and put you favorite utilities in the
-script context.</p>
+<p><em>Script Extensions</em> will be executed before script you uploaded(or before your first shell command),
+by default the script is <em>com/github/safrain/remotegsh/server/extension/spring.groovy</em>, adding support to Spring framework
+and you can customize it using filter init parameter <em>scriptExtensions</em>
+In the extension script, you can put some variables or function into the script context to add support to various frameworks
+Or you can simply put some of your favorite utilities in it.</p>
 
-<p><strong>Built-in variables before init script</strong></p>
+<p><strong>Built-in variables</strong></p>
 
 <p><em>_request</em> Just the request</p>
 
@@ -159,9 +160,15 @@ script context.</p>
 
 <p><em>_charset</em> Request and response charset, same as <em>RgshFilter.charset</em></p>
 
+<p><strong>Spring support</strong>(com/github/safrain/remotegsh/server/extension/spring.groovy)</p>
+
+<p><em>_context</em> Just the spring ApplicationContext in your ServletContext</p>
+
+<p><em>beans</em> Shortcut to access your beans, use 'beans.beanName' to access your bean</p>
+
 <h2>Example</h2>
 
-<p>You can found an example project in <em>remote-gsh-example/</em> directory, the example project is a very very simple PetStore project, you can build it and run the war file
+<p>You can find an example project in <em>remote-gsh-example/</em> directory, the example project is a very very simple PetStore project, you can build it and run the war file
 in any type of servlet container, or you can just run <em>mvn run:jetty</em> to start the built-in jetty
 server and find whats going on, One thing to say is that the project contains several problems,
 which made the application unavailable, but with the power of Remote Groovy Shell and Groovy language,
@@ -169,9 +176,14 @@ you can even fix those problems without restarting your application</p>
 
 <p><em>examples.groovy</em> will show you what you can do with you application using Remote Groovy Shell, it is very simple, just read it!</p>
 
-<p>Use command below to run this script on the server(Assume that you are using the buily-in Jetty), of course you can use the <em>rgsh</em> client :D</p>
+<p>Use command below to run this script on the server(Assume that you are using the buily-in Jetty)</p>
 
 <pre><code>curl -X POST "http://localhost/admin/rgsh" -T example.groovy
+</code></pre>
+
+<p>Of course you can use the <em>rgsh</em> client :D</p>
+
+<pre><code>./rgsh example.groovy
 </code></pre>
       </section>
       <footer>
