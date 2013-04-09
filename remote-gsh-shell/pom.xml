@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.github.safrain</groupId>
 		<artifactId>remote-gsh-parent</artifactId>
-		<version>0.2-SNAPSHOT</version>
+		<version>0.1</version>
 	</parent>
 	<artifactId>remote-gsh-shell</artifactId>
 	<name>Remote Groovy Shell Clientside</name>
