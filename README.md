@@ -29,12 +29,16 @@ Through this Remote Groovy Shell, you can do a lot of fantastic things to you ap
 
 1.Add following jars into you classpath
 
-- [Remote Groovy Shell](http://g.cn) TODO
+- [Remote Groovy Shell](http://search.maven.org/remotecontent?filepath=com/github/safrain/remote-gsh-server/0.1/remote-gsh-server-0.1.jar)
 - [Groovy Runtime](http://groovy.codehaus.org/Download) Any version greater than 1.8.6 is OK 
 
 For maven projects, add below content into you pom
 
-	TODO, im uploading it to maven central
+	<dependency>
+		<groupId>com.github.safrain</groupId>
+		<artifactId>remote-gsh-server</artifactId>
+		<version>0.1</version>
+	</dependency>
 
 	<dependency>
 		<groupId>org.codehaus.groovy</groupId>
